@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.springsocialnetwork.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -41,5 +42,25 @@ public class JwtProvider {
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
             throw new MyRuntimeException("Exception occured while reading private key from keystore");
         }
+    }
+
+    public boolean validateToken(String token){
+        Jwts.parserBuilder().setSigningKey(getPublicKey()).build().parseClaimsJwt(token);
+        return true;
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("springsm").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new RuntimeException("Exception while reading public key");
+        }
+
+    }
+
+    public String getUsernameFromToken(String token){
+        Claims claims = Jwts.parserBuilder().setSigningKey(getPublicKey())
+                .build().parseClaimsJwt(token).getBody();
+        return claims.getSubject();
     }
 }
