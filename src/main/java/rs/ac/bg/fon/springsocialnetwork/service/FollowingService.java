@@ -3,6 +3,7 @@ package rs.ac.bg.fon.springsocialnetwork.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
+import rs.ac.bg.fon.springsocialnetwork.mapper.UserMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Following;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.FollowRepository;
@@ -18,16 +19,13 @@ import java.util.stream.Collectors;
 public class FollowingService {
 
     private FollowRepository followRepository;
+    private UserMapper userMapper;
 
 
     public List<UserDto> getFollowersForUser(Long userId) {
         List<Following> optFoll = followRepository.findAllByFollowed_userId(userId);
         List<User> followers = optFoll.stream().map(Following::getFollowing).collect(Collectors.toList());
-        List<UserDto> followersDto = new ArrayList<>();
-        for (User u:followers){
-            UserDto userDto = new UserDto(u.getUserId(),u.getUsername(),u.getEmail(),u.getCreated(),u.getFollowing().size(),u.getFollowers().size());
-            followersDto.add(userDto);
-        }
+        List<UserDto> followersDto= followers.stream().map((userToMap)->userMapper.toDto(userToMap)).collect(Collectors.toList());
         return followersDto;
     }
 }
