@@ -1,12 +1,14 @@
 package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
+import rs.ac.bg.fon.springsocialnetwork.mapper.UserMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Following;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.model.idclasses.FollowingId;
@@ -14,13 +16,16 @@ import rs.ac.bg.fon.springsocialnetwork.repository.FollowRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserService {
     private UserRepository userRepository;
     private FollowRepository followRepository;
+    private UserMapper userMapper;
 
     @Transactional
     public void follow(Long idFollowing, Long idFollowed){
@@ -47,7 +52,7 @@ public class UserService {
     public UserDto getUser(Long id) {
         Optional<User> userOpt = userRepository.findById(id);
         User user = userOpt.orElseThrow(()->new MyRuntimeException("User with id : "+id+" not found"));
-        return new UserDto(id,user.getUsername(),user.getEmail(),user.getCreated(),user.getFollowers().size(),user.getFollowing().size());
+        return userMapper.toDto(user);
     }
 
     public void unfollow(Long idFollowing, Long idFollowed) {
@@ -64,5 +69,12 @@ public class UserService {
         Optional<Following> follOpt = followRepository.findById(new FollowingId(idFollowing, idFollowed));
         Following foll = follOpt.orElseThrow(() -> new MyRuntimeException("You dont follow this user"));
         followRepository.delete(foll);
+    }
+
+    public List<UserDto> getAllFollowersForUser(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        User user = userOpt.orElseThrow(() -> new MyRuntimeException("User not found"));
+        List<User> followers = user.getFollowers();
+        return followers.stream().map((user1)->userMapper.toDto(user1)).collect(Collectors.toList());
     }
 }

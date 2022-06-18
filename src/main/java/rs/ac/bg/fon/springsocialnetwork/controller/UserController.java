@@ -9,6 +9,8 @@ import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.service.UserService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @AllArgsConstructor
@@ -32,6 +34,11 @@ public class UserController {
     public ResponseEntity<UserDto> getUser(@PathVariable Long id){
         UserDto userDto = userService.getUser(id);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
+    }
+
+    @GetMapping("/followers/{userId}")
+    public ResponseEntity<List<UserDto>> getAllFollowersForUser(@PathVariable Long userId){
+        return new ResponseEntity<List<UserDto>>(userService.getAllFollowersForUser(userId),HttpStatus.OK);
     }
 
     @ExceptionHandler(MyRuntimeException.class)
