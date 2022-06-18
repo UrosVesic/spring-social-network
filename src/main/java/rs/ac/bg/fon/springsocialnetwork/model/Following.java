@@ -13,7 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity
 @IdClass(FollowingId.class)
-public class Following {
+public class Following implements MyEntity{
     @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "following_user_id", nullable = false)
