@@ -1,13 +1,11 @@
 package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
-import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
 import rs.ac.bg.fon.springsocialnetwork.mapper.UserMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Following;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
