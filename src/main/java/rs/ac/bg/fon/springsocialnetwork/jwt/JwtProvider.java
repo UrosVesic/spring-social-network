@@ -13,6 +13,9 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import org.springframework.security.core.userdetails.User;
 
+/**
+ * @author UrosVesic
+ */
 @Service
 public class JwtProvider {
 

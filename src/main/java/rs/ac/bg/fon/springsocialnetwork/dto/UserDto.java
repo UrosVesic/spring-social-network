@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+/**
+ * @author UrosVesic
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

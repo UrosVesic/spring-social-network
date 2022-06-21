@@ -12,6 +12,9 @@ import rs.ac.bg.fon.springsocialnetwork.service.PostService;
 
 import java.util.List;
 
+/**
+ * @author UrosVesic
+ */
 @RestController
 @RequestMapping("/api/post")
 @AllArgsConstructor

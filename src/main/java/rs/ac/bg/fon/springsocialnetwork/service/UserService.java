@@ -25,6 +25,9 @@ public class UserService {
     private FollowRepository followRepository;
     private UserMapper userMapper;
 
+    /**
+     * @author UrosVesic
+     */
     @Transactional
     public void follow(Long idFollowing, Long idFollowed){
         Optional<User> userOptFollowing = userRepository.findById(idFollowing);

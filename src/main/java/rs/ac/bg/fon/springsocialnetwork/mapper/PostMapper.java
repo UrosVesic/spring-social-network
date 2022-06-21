@@ -8,6 +8,10 @@ import rs.ac.bg.fon.springsocialnetwork.model.ReactionType;
 import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.ReactionRepository;
+
+/**
+ * @author UrosVesic
+ */
 @AllArgsConstructor
 public class PostMapper implements GenericMapper<PostResponse, Post> {
 

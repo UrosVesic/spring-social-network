@@ -9,6 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 
+/**
+ * @author UrosVesic
+ */
 @Data
 @Entity
 @AllArgsConstructor

@@ -3,6 +3,9 @@ package rs.ac.bg.fon.springsocialnetwork.mapper;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 
+/**
+ * @author UrosVesic
+ */
 public class UserMapper implements GenericMapper<UserDto, User>{
 
     @Override

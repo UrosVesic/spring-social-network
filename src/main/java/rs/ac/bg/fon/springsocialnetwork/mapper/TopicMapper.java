@@ -5,6 +5,9 @@ import rs.ac.bg.fon.springsocialnetwork.dto.TopicDto;
 import rs.ac.bg.fon.springsocialnetwork.model.Topic;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 
+/**
+ * @author UrosVesic
+ */
 @AllArgsConstructor
 public class TopicMapper implements GenericMapper<TopicDto, Topic> {
 

@@ -10,6 +10,9 @@ import rs.ac.bg.fon.springsocialnetwork.repository.TopicRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author UrosVesic
+ */
 @Service
 @AllArgsConstructor
 public class TopicService {

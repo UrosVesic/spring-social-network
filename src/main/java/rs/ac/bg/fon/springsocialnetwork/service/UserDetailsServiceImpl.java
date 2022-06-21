@@ -14,6 +14,9 @@ import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * @author UrosVesic
+ */
 @Service("userDetailsService")
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {

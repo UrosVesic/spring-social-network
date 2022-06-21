@@ -1,6 +1,4 @@
-package rs.ac.bg.fon.springsocialnetwork.config;/**
- * @author UrosVesic
- */
+package rs.ac.bg.fon.springsocialnetwork.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

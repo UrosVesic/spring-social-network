@@ -11,6 +11,9 @@ import rs.ac.bg.fon.springsocialnetwork.service.UserService;
 
 import java.util.List;
 
+/**
+ * @author UrosVesic
+ */
 @RestController
 @RequestMapping("/api/user")
 @AllArgsConstructor

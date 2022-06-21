@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author UrosVesic
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

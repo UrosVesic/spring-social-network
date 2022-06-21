@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rs.ac.bg.fon.springsocialnetwork.service.UserDetailsServiceImpl;
 
+/**
+ * @author UrosVesic
+ */
 @EnableWebSecurity
 @AllArgsConstructor
 @Configuration

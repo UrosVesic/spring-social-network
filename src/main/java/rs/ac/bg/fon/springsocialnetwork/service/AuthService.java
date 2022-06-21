@@ -19,6 +19,9 @@ import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 import java.time.Instant;
 import java.util.Optional;
 
+/**
+ * @author UrosVesic
+ */
 @Service
 @AllArgsConstructor
 public class AuthService {

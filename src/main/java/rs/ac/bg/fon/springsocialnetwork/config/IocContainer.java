@@ -9,7 +9,9 @@ import rs.ac.bg.fon.springsocialnetwork.model.Topic;
 import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.ReactionRepository;
-
+/**
+ * @author UrosVesic
+ */
 @Configuration
 public class IocContainer {
     @Bean

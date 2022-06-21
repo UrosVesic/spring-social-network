@@ -8,6 +8,9 @@ import rs.ac.bg.fon.springsocialnetwork.model.idclasses.FollowingId;
 import javax.persistence.*;
 import java.time.Instant;
 
+/**
+ * @author UrosVesic
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

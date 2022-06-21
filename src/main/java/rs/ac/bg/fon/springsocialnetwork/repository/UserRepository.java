@@ -5,6 +5,9 @@ import rs.ac.bg.fon.springsocialnetwork.model.User;
 
 import java.util.Optional;
 
+/**
+ * @author UrosVesic
+ */
 public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByUsername(String username);
 }

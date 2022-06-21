@@ -12,6 +12,9 @@ import rs.ac.bg.fon.springsocialnetwork.service.FollowingService;
 
 import java.util.List;
 
+/**
+ * @author UrosVesic
+ */
 @RestController
 @RequestMapping("/api/following")
 @AllArgsConstructor

@@ -12,6 +12,9 @@ import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * @author UrosVesic
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

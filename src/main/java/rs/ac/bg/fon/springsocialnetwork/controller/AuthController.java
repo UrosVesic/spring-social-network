@@ -11,6 +11,9 @@ import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
+/**
+ * @author UrosVesic
+ */
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor

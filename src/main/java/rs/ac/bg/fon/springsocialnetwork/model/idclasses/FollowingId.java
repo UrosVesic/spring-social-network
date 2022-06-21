@@ -9,6 +9,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.IdClass;
 import java.io.Serializable;
 
+/**
+ * @author UrosVesic
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
