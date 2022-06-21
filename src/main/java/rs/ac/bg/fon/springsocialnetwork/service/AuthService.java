@@ -11,11 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.springsocialnetwork.dto.AuthResponse;
 import rs.ac.bg.fon.springsocialnetwork.dto.LoginRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.RegisterRequest;
+import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -37,9 +39,17 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String token = jwtProvider.generateToken(authenticate);
-        return  new AuthResponse(token, loginRequest.getUsername());
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
+            String token = jwtProvider.generateToken(authenticate);
+            return  new AuthResponse(token, loginRequest.getUsername());
+    }
+
+
+
+    public User getCurrentUser(){
+        String username=SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> currentUser = userRepository.findByUsername(username);
+        return currentUser.orElseThrow(()->new MyRuntimeException("Current user not found"));
     }
 }
