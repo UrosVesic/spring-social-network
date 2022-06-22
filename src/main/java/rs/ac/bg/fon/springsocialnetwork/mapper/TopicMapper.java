@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import rs.ac.bg.fon.springsocialnetwork.dto.TopicDto;
 import rs.ac.bg.fon.springsocialnetwork.model.Topic;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
+import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
+
+import java.time.Instant;
 
 /**
  * @author UrosVesic
@@ -12,10 +15,16 @@ import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 public class TopicMapper implements GenericMapper<TopicDto, Topic> {
 
     private PostRepository postRepository;
+    private AuthService authService;
 
     @Override
     public Topic toEntity(TopicDto dto) {
-        return null;
+        Topic topic = new Topic();
+        topic.setDescription(dto.getDescription());
+        topic.setName(dto.getName());
+        topic.setCreatedDate(Instant.now());
+        topic.setUser(authService.getCurrentUser());
+        return topic;
     }
 
     @Override
