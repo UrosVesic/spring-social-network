@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 public class PostResponse implements Dto{
 
     private Long id;
-    private String postName;
-    private String url;
+    private String title;
     private String content;
     private String userName;
     private String topicName;
