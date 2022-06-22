@@ -1,19 +1,17 @@
 package rs.ac.bg.fon.springsocialnetwork.mapper;
 
-import com.github.marlonlom.utilities.timeago.TimeAgo;
 import lombok.AllArgsConstructor;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
 import rs.ac.bg.fon.springsocialnetwork.model.Post;
 import rs.ac.bg.fon.springsocialnetwork.model.ReactionType;
 import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
-import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.ReactionRepository;
 
 /**
  * @author UrosVesic
  */
 @AllArgsConstructor
-public class PostMapper implements GenericMapper<PostResponse, Post> {
+public class PostResponseMapper implements GenericMapper<PostResponse, Post> {
 
     private CommentRepository commentRepository;
     private ReactionRepository reactionRepository;
@@ -28,7 +26,7 @@ public class PostMapper implements GenericMapper<PostResponse, Post> {
     public PostResponse toDto(Post post) {
         PostResponse postResponse = new PostResponse();
         postResponse.setId(post.getId());
-        postResponse.setPostName(post.getPostName());
+        postResponse.setTitle(post.getTitle());
         postResponse.setContent(post.getContent());
         postResponse.setTopicName(post.getTopic().getName());
         postResponse.setUserName(post.getUser().getUsername());
