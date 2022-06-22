@@ -7,6 +7,7 @@ import rs.ac.bg.fon.springsocialnetwork.mapper.TopicMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Topic;
 import rs.ac.bg.fon.springsocialnetwork.repository.TopicRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,5 +23,11 @@ public class TopicService {
     public List<TopicDto> getAllTopics(){
         List<Topic> topics = topicRepository.findAll();
         return topics.stream().map((topic)->topicMapper.toDto(topic)).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void createTopic(TopicDto dto) {
+        Topic topic = topicMapper.toEntity(dto);
+        topicRepository.save(topic);
     }
 }

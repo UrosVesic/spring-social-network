@@ -3,9 +3,8 @@ package rs.ac.bg.fon.springsocialnetwork.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.springsocialnetwork.dto.TopicDto;
 import rs.ac.bg.fon.springsocialnetwork.model.Topic;
 import rs.ac.bg.fon.springsocialnetwork.service.TopicService;
@@ -18,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/topic")
 @AllArgsConstructor
+
 public class TopicController {
 
     private TopicService topicService;
@@ -26,4 +26,11 @@ public class TopicController {
     public ResponseEntity<List<TopicDto>> getAllTopics(){
     return new ResponseEntity<>(topicService.getAllTopics(), HttpStatus.OK);
     }
+    @CrossOrigin
+    @PostMapping("/create")
+    public ResponseEntity createTopic(@RequestBody TopicDto topic){
+        topicService.createTopic(topic);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
 }
