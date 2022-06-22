@@ -21,9 +21,7 @@ public class Post implements MyEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Post Name cannot be empty or Null")
-    private String postName;
-    @Nullable
-    private String url;
+    private String title;
     @Nullable
     @Lob
     private String content;
