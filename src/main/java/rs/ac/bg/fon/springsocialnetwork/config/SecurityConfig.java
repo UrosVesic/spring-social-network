@@ -9,12 +9,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import rs.ac.bg.fon.springsocialnetwork.jwt.JwtFilter;
+import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
 import rs.ac.bg.fon.springsocialnetwork.service.UserDetailsServiceImpl;
+
+import java.util.Arrays;
 
 /**
  * @author UrosVesic
@@ -30,17 +40,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/api/topic/all")
-                .permitAll()
-                .antMatchers("/api/post/all")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+        http.cors().and()
+                .csrf().disable()
+                .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers("/api/auth/**")
+                        .permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/topic/all")
+                        .permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/post/all")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated());
+        http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+    @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter();
+    }
+
+
+
+
+    /* To allow Pre-flight [OPTIONS] request from browser */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
