@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 import rs.ac.bg.fon.springsocialnetwork.service.UserService;
 
 import java.util.List;
@@ -20,10 +21,11 @@ import java.util.List;
 public class UserController {
 
     private UserService userService;
+    private AuthService authService;
 
-    @PostMapping("/{idFollowing}/follow/{idFollowed}")
-    public ResponseEntity<String> follow(@PathVariable Long idFollowing,@PathVariable Long idFollowed){
-        userService.follow(idFollowing,idFollowed);
+    @PostMapping("/follow/{idFollowed}")
+    public ResponseEntity<String> follow(@PathVariable Long idFollowed){
+        userService.follow(authService.getCurrentUser(), idFollowed);
         return new ResponseEntity<>("Follow succesful", HttpStatus.CREATED);
     }
     @DeleteMapping("/{idFollowing}/unfollow/{idFollowed}")
@@ -41,7 +43,7 @@ public class UserController {
 
     @GetMapping("/followers/{userId}")
     public ResponseEntity<List<UserDto>> getAllFollowersForUser(@PathVariable Long userId){
-        return new ResponseEntity<List<UserDto>>(userService.getAllFollowersForUser(userId),HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllFollowersForUser(userId),HttpStatus.OK);
     }
 
     @ExceptionHandler(MyRuntimeException.class)

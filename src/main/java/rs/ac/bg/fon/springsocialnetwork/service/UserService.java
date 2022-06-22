@@ -17,6 +17,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+/**
+ * @author UrosVesic
+ */
 
 @Service
 @AllArgsConstructor
@@ -25,24 +28,20 @@ public class UserService {
     private FollowRepository followRepository;
     private UserMapper userMapper;
 
-    /**
-     * @author UrosVesic
-     */
+
     @Transactional
-    public void follow(Long idFollowing, Long idFollowed){
-        Optional<User> userOptFollowing = userRepository.findById(idFollowing);
+    public void follow(User currentUser, Long idFollowed){
         Optional<User> userOptFollowed = userRepository.findById(idFollowed);
 
-        User userFollowing = userOptFollowing.orElseThrow(() -> new MyRuntimeException("User not found"));
         User userFollowed = userOptFollowed.orElseThrow(() -> new MyRuntimeException("User not found"));
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(!userFollowing.getUsername().equals(username)|| userFollowed.getUsername().equals(username)){
+        if(userFollowed.getUsername().equals(username)){
             throw new MyRuntimeException("Following not allowed");
         }
 
-        Following following = new Following(userFollowing,userFollowed, Instant.now());
-        Optional<Following> foll = followRepository.findById(new FollowingId(idFollowing, idFollowed));
+        Following following = new Following(currentUser,userFollowed, Instant.now());
+        Optional<Following> foll = followRepository.findById(new FollowingId(currentUser.getUserId(), idFollowed));
         if(foll.isPresent()){
             throw new MyRuntimeException("You already follow this user");
         }
