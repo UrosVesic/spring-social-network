@@ -1,5 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.jwt;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +20,9 @@ import java.io.IOException;
  * @author UrosVesic
  */
 public class JwtFilter extends OncePerRequestFilter {
+    @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
     private JwtProvider jwtProvider;
 
     @Override
@@ -37,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Autharization");
+        String bearerToken = request.getHeader("Authorization");
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")){
             return bearerToken.substring(7);
         }
