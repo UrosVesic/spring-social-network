@@ -15,7 +15,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Comment {
+public class Comment implements MyEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
