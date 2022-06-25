@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Reaction {
+public class Reaction implements MyEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
