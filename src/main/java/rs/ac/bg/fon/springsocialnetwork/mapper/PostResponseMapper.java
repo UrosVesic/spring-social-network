@@ -1,11 +1,18 @@
 package rs.ac.bg.fon.springsocialnetwork.mapper;
 
+import com.github.marlonlom.utilities.timeago.TimeAgo;
 import lombok.AllArgsConstructor;
+import org.ocpsoft.prettytime.PrettyTime;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
+import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.model.Post;
+import rs.ac.bg.fon.springsocialnetwork.model.Reaction;
 import rs.ac.bg.fon.springsocialnetwork.model.ReactionType;
 import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.ReactionRepository;
+import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
+
+import java.util.Optional;
 
 /**
  * @author UrosVesic
@@ -15,6 +22,7 @@ public class PostResponseMapper implements GenericMapper<PostResponse, Post> {
 
     private CommentRepository commentRepository;
     private ReactionRepository reactionRepository;
+    private AuthService authService;
 
 
     @Override
@@ -31,12 +39,39 @@ public class PostResponseMapper implements GenericMapper<PostResponse, Post> {
         postResponse.setTopicName(post.getTopic().getName());
         postResponse.setUserName(post.getUser().getUsername());
         postResponse.setCommentCount(getCommentCount(post));
-        postResponse.setDislikes(getLikesCount(post));
-        postResponse.setLikes(getDislikesCount(post));
-        //TimeAgo.using(post.getCreatedDate().toEpochMilli())
-        postResponse.setDuration("0");
-        postResponse.setLikeCount(postResponse.getLikes()-postResponse.getDislikes());
+        postResponse.setDislikes(getDislikesCount(post));
+        postResponse.setLikes(getLikesCount(post));
+        postResponse.setLiked(isLiked(post.getId()));
+        postResponse.setDisliked(isDisliked(post.getId()));
+        PrettyTime p = new PrettyTime();
+        postResponse.setDuration( p.format(post.getCreatedDate()));
         return postResponse;
+    }
+
+    private boolean isDisliked(Long id) {
+        try{
+            Optional<Reaction> optReaction = reactionRepository.findByPost_idAndUser(id, authService.getCurrentUser());
+            if(!optReaction.isPresent()){
+                return false;
+            }
+            return optReaction.get().getReactionType()==ReactionType.DISLIKE;
+        }catch (MyRuntimeException ex){
+            return false;
+        }
+
+    }
+
+    private boolean isLiked(Long postId) {
+        try{
+            Optional<Reaction> optReaction = reactionRepository.findByPost_idAndUser(postId, authService.getCurrentUser());
+            if(!optReaction.isPresent()){
+                return false;
+            }
+            return optReaction.get().getReactionType()==ReactionType.LIKE;
+        }catch (MyRuntimeException ex){
+            return false;
+        }
+
     }
 
     private Integer getDislikesCount(Post post) {
