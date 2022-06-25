@@ -11,6 +11,7 @@ import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,11 +26,12 @@ public class PostService {
     private PostRepository postRepository;
     private PostResponseMapper postResponseMapper;
     private PostRequestMapper postRequestMapper;
+    private AuthService authService;
 
     public List<PostResponse> getAllPosts(){
         List<Post> posts = postRepository.findAll();
         List<PostResponse> collect = posts.stream().map((post) -> postResponseMapper.toDto(post)).collect(Collectors.toList());
-        Collections.sort(collect,(PostResponse p1,PostResponse p2)->p1.getLikeCount()>p2.getLikeCount()?-1:1);
+        Collections.sort(collect,(PostResponse p1,PostResponse p2)->p1.getLikes()-p1.getDislikes()>p2.getLikes()-p2.getDislikes()?-1:1);
         return collect;
 
     }
@@ -45,5 +47,21 @@ public class PostService {
     public PostResponse getPost(Long id) {
         Post post = postRepository.getById(id);
         return postResponseMapper.toDto(post);
+    }
+
+
+    public List<PostResponse> getAllPostsForUser(String username) {
+        List<Post> posts = postRepository.findAllByUser_username(username);
+        return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
+    }
+
+    public void deletePost(Long id) {
+        postRepository.deleteById(id);
+    }
+
+    public List<PostResponse> getAllPostsForFollowingUsers() {
+        User currentUser = authService.getCurrentUser();
+        List<Post> posts = postRepository.findByUser_userIdIn( currentUser.getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()));
+        return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
     }
 }

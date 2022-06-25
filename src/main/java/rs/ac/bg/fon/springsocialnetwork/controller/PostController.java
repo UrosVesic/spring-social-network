@@ -25,7 +25,14 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PostResponse>> getAllPosts(){
-        return new ResponseEntity<>(postService.getAllPosts(), HttpStatus.OK);
+        List<PostResponse> allPosts = postService.getAllPosts();
+        return new ResponseEntity<>(allPosts, HttpStatus.OK);
+    }
+
+    @GetMapping("/authAll")
+    public ResponseEntity<List<PostResponse>> getAllPostsForFollowingUsers(){
+        List<PostResponse> allPosts = postService.getAllPostsForFollowingUsers();
+        return new ResponseEntity<>(allPosts, HttpStatus.OK);
     }
 
     @PostMapping("/create")
@@ -39,6 +46,18 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id){
         PostResponse postResponse = postService.getPost(id);
         return new ResponseEntity<>(postResponse,HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<PostResponse>> getAllPostsForUser(@PathVariable String username){
+        List<PostResponse> postResponses = postService.getAllPostsForUser(username);
+        return new ResponseEntity<>(postResponses,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletePost(@PathVariable Long id){
+        postService.deletePost(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
