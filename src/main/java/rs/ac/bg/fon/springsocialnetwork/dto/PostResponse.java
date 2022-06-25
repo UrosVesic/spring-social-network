@@ -21,5 +21,6 @@ public class PostResponse implements Dto{
     private Integer dislikes;
     private Integer commentCount;
     private String duration;
-    private Integer likeCount;
+    private boolean liked;
+    private boolean disliked;
 }
