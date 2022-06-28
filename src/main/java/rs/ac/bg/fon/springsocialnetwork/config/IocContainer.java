@@ -15,13 +15,13 @@ import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 @Configuration
 public class IocContainer {
     @Bean
-    public UserMapper userMapper(){
-        return new UserMapper();
+    public UserMapper userMapper(AuthService authService){
+        return new UserMapper(authService);
     }
 
     @Bean
-    public PostResponseMapper postMapper(CommentRepository commentRepository, ReactionRepository reactionRepository, AuthService authService){
-        return new PostResponseMapper(commentRepository,reactionRepository,authService);
+    public PostMapper postMapper(CommentRepository commentRepository, ReactionRepository reactionRepository, AuthService authService){
+        return new PostMapper(commentRepository,reactionRepository,authService);
     }
 
     @Bean
