@@ -20,4 +20,7 @@ public class UserDto implements Dto{
     private Instant created;
     private int numOfFollowers;
     private int numOfFollowing;
+    private boolean followedByCurrentUser;
+    private int mutualFollowers;
+    private String bio;
 }
