@@ -25,7 +25,7 @@ public class CommentService {
     }
 
     public List<CommentDto> getAllCommentsForPost(Long postId) {
-        List<Comment> comments = commentRepository.findByPost_id(postId);
+        List<Comment> comments = commentRepository.findByPost_idOrderByCreatedDateDesc(postId);
         return comments.stream().map((comment)->commentMapper.toDto(comment)).collect(Collectors.toList());
     }
 }
