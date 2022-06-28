@@ -51,7 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/post/all")
                         .permitAll()
+                        .antMatchers("/sba-websocket/**")
+                        .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/comment/**")
+                        .permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/user/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated());
