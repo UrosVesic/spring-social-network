@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
+import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.mapper.PostRequestMapper;
-import rs.ac.bg.fon.springsocialnetwork.mapper.PostResponseMapper;
+import rs.ac.bg.fon.springsocialnetwork.mapper.PostMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Post;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
+import rs.ac.bg.fon.springsocialnetwork.repository.TopicRepository;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,9 +25,10 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private PostRepository postRepository;
-    private PostResponseMapper postResponseMapper;
+    private PostMapper postResponseMapper;
     private PostRequestMapper postRequestMapper;
     private AuthService authService;
+    private TopicRepository topicRepository;
 
     public List<PostResponse> getAllPosts(){
         List<Post> posts = postRepository.findAll();
@@ -63,5 +65,13 @@ public class PostService {
         User currentUser = authService.getCurrentUser();
         List<Post> posts = postRepository.findByUser_userIdIn( currentUser.getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()));
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
+    }
+
+    public void updatePost(Long id,PostRequest postRequest) {
+        Post post = postRepository.findById(id).orElseThrow(()->new MyRuntimeException("Post not found"));
+        post.setTopic(topicRepository.getByName(postRequest.getTopicName()).orElseThrow(()->new MyRuntimeException("Topic not found")));
+        post.setContent(postRequest.getContent());
+        post.setTitle(postRequest.getTitle());
+        postRepository.save(post);
     }
 }

@@ -60,4 +60,10 @@ public class PostController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PatchMapping("/update/{id}")
+    public ResponseEntity updatePost(@PathVariable Long id,@RequestBody PostRequest postRequest){
+        postService.updatePost(id,postRequest);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
