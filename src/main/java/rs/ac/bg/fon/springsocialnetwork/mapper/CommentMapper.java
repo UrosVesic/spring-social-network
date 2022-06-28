@@ -32,6 +32,7 @@ public class CommentMapper implements GenericMapper<CommentDto, Comment> {
     @Override
     public CommentDto toDto(Comment comment) {
         CommentDto dto = new CommentDto();
+        dto.setId(comment.getId());
         dto.setPostId(comment.getPost().getId());
         dto.setUsername(comment.getUser().getUsername());
         dto.setText(comment.getText());
