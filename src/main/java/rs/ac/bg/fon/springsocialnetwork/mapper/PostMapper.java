@@ -1,6 +1,5 @@
 package rs.ac.bg.fon.springsocialnetwork.mapper;
 
-import com.github.marlonlom.utilities.timeago.TimeAgo;
 import lombok.AllArgsConstructor;
 import org.ocpsoft.prettytime.PrettyTime;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
@@ -18,7 +17,7 @@ import java.util.Optional;
  * @author UrosVesic
  */
 @AllArgsConstructor
-public class PostResponseMapper implements GenericMapper<PostResponse, Post> {
+public class PostMapper implements GenericMapper<PostResponse, Post> {
 
     private CommentRepository commentRepository;
     private ReactionRepository reactionRepository;
