@@ -11,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author UrosVesic
@@ -32,6 +33,7 @@ public class User implements MyEntity{
     @NotBlank(message = "Email is required")
     private String email;
     private Instant created;
+    private String bio;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "following",
             joinColumns = @JoinColumn(name = "following_user_id"),
@@ -41,4 +43,9 @@ public class User implements MyEntity{
     @ManyToMany(mappedBy = "following",fetch = FetchType.LAZY)
     private List<User> followers;
 
+    public int getMutualFollowers(User currentUser) {
+        List<User> listOfMutualFoll = followers.stream()
+                .filter(two -> currentUser.getFollowers().stream().anyMatch(one -> one.getUsername().equals(two.getUsername()))).collect(Collectors.toList());
+        return listOfMutualFoll.size();
+    }
 }
