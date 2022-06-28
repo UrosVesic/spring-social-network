@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class CommentDto implements Dto{
+
+    private Long id;
     private Long postId;
     private String text;
     private String username;
