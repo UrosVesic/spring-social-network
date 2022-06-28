@@ -1,12 +1,17 @@
 package rs.ac.bg.fon.springsocialnetwork.mapper;
 
+import lombok.AllArgsConstructor;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 
 /**
  * @author UrosVesic
  */
-public class UserMapper implements GenericMapper<UserDto, User>{
+@AllArgsConstructor
+public class UserMapper implements GenericMapper<UserDto, User> {
+
+    private AuthService authService;
 
     @Override
     public User toEntity(UserDto dto) {
@@ -20,6 +25,16 @@ public class UserMapper implements GenericMapper<UserDto, User>{
 
     @Override
     public UserDto toDto(User user) {
-        return new UserDto(user.getUserId(),user.getUsername(),user.getEmail(),user.getCreated(),user.getFollowing().size(),user.getFollowers().size());
+        UserDto dto = new UserDto();
+        dto.setUserId(user.getUserId());
+        dto.setUsername(user.getUsername());
+        dto.setCreated(user.getCreated());
+        dto.setEmail(user.getEmail());
+        dto.setFollowedByCurrentUser(user.getFollowers().contains(authService.getCurrentUser()));
+        dto.setNumOfFollowers(user.getFollowers().size());
+        dto.setNumOfFollowing(user.getFollowing().size());
+        dto.setMutualFollowers(user.getMutualFollowers(authService.getCurrentUser()));
+        dto.setBio(user.getBio());
+        return dto;
     }
 }
