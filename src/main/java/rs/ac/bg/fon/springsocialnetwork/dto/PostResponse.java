@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author UrosVesic
  */
@@ -23,4 +25,6 @@ public class PostResponse implements Dto{
     private String duration;
     private boolean liked;
     private boolean disliked;
+    private List<String> usernameLikes;
+    private List<String> usernameDislikes;
 }

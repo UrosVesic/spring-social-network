@@ -11,7 +11,9 @@ import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.ReactionRepository;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author UrosVesic
@@ -42,9 +44,21 @@ public class PostMapper implements GenericMapper<PostResponse, Post> {
         postResponse.setLikes(getLikesCount(post));
         postResponse.setLiked(isLiked(post.getId()));
         postResponse.setDisliked(isDisliked(post.getId()));
+        postResponse.setUsernameLikes(getUsernameLikes(post));
+        postResponse.setUsernameDislikes(getUsernameDislikes(post));
         PrettyTime p = new PrettyTime();
         postResponse.setDuration( p.format(post.getCreatedDate()));
         return postResponse;
+    }
+
+    private List<String> getUsernameDislikes(Post post) {
+        List<Reaction> likes = reactionRepository.findByPostAndReactionType(post, ReactionType.DISLIKE);
+        return likes.stream().map((like)->like.getUser().getUsername()).collect(Collectors.toList());
+    }
+
+    private List<String> getUsernameLikes(Post post) {
+        List<Reaction> likes = reactionRepository.findByPostAndReactionType(post, ReactionType.LIKE);
+        return likes.stream().map((like)->like.getUser().getUsername()).collect(Collectors.toList());
     }
 
     private boolean isDisliked(Long id) {
