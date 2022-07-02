@@ -28,4 +28,8 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByPost_idOrderByCreatedDateDesc(postId);
         return comments.stream().map((comment)->commentMapper.toDto(comment)).collect(Collectors.toList());
     }
+
+    public void deleteComment(Long id) {
+        commentRepository.deleteById(id);
+    }
 }

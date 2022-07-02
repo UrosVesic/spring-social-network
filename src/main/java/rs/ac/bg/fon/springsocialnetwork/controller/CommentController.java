@@ -31,5 +31,11 @@ public class CommentController {
         return new ResponseEntity<>(commentDtos,HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCommend(@PathVariable Long id){
+        commentService.deleteComment(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
 }
