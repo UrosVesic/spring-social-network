@@ -16,4 +16,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findByuserIdNotIn(List<Long> following);
 
+    Optional<User> findByEmail(String email);
 }

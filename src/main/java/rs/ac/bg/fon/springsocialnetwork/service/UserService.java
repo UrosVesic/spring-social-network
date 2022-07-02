@@ -119,4 +119,18 @@ public class UserService {
                 ->user2.getMutualFollowers(authService.getCurrentUser())-user1.getMutualFollowers(authService.getCurrentUser()));
         return notFollowing.stream().map((user)->userMapper.toDto(user)).collect(Collectors.toList());
     }
+
+    public void updateUser(UserDto userDto) {
+        User user = userRepository.findById(userDto.getUserId()).orElseThrow(() -> new MyRuntimeException("User not found"));
+        if(userRepository.findByUsername(userDto.getUsername()).isPresent() && !user.getUsername().equals(userDto.getUsername())){
+            throw new MyRuntimeException("Username taken");
+        }
+        if(userRepository.findByEmail(userDto.getEmail()).isPresent() && !user.getEmail().equals(userDto.getEmail())){
+            throw new MyRuntimeException("Email linked to another account");
+        }
+        user.setBio(userDto.getBio());
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        userRepository.save(user);
+    }
 }

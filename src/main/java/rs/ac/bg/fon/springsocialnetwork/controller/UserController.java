@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
+import rs.ac.bg.fon.springsocialnetwork.exception.ErrorResponse;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 import rs.ac.bg.fon.springsocialnetwork.service.UserService;
@@ -72,8 +73,15 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllFollowingForUser(username),HttpStatus.OK);
     }
 
+    @PatchMapping
+    public ResponseEntity updateUser(@RequestBody UserDto userDto){
+        userService.updateUser(userDto);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @ExceptionHandler(MyRuntimeException.class)
-    public  ResponseEntity<String> handleMyRuntimeException(MyRuntimeException ex){
-        return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    public  ResponseEntity<ErrorResponse> handleMyRuntimeException(MyRuntimeException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 }
