@@ -11,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,11 @@ public class User implements MyEntity{
     @ManyToMany(mappedBy = "following",fetch = FetchType.LAZY)
     private List<User> followers;
 
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles"
+            ,joinColumns = {@JoinColumn(name = "userId")}
+            ,inverseJoinColumns = {@JoinColumn(name="roleId")})
+    private Set<Role> roles;
     public int getMutualFollowers(User currentUser) {
         List<User> listOfMutualFoll = followers.stream()
                 .filter(two -> currentUser.getFollowers().stream().anyMatch(one -> one.getUsername().equals(two.getUsername()))).collect(Collectors.toList());
