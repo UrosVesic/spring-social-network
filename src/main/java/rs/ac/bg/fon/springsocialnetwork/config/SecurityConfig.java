@@ -47,16 +47,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/topic/**")
                         .permitAll()
+                        .antMatchers("/api/post/authAll")
+                        .hasAuthority("USER")
                         .antMatchers(HttpMethod.GET, "/api/post/{id}")
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/post/all")
                         .permitAll()
+                        .antMatchers("/api/post/secured/**")
+                        .hasAuthority("ADMIN")
                         .antMatchers("/sba-websocket/**")
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/comment/**")
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/user/**")
                         .permitAll()
+                        .antMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
                         .anyRequest()
                         .authenticated());
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -69,7 +75,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-    /* To allow Pre-flight [OPTIONS] request from browser */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
