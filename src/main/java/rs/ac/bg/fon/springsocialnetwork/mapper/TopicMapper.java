@@ -33,7 +33,7 @@ public class TopicMapper implements GenericMapper<TopicDto, Topic> {
         dto.setDescription(topic.getDescription());
         dto.setId(topic.getId());
         dto.setName(topic.getName());
-        dto.setNumberOfPosts(postRepository.findByTopic(topic).size());
+        dto.setNumberOfPosts(postRepository.findByTopicAndDeletebByAdminIsNull(topic).size());
         return dto;
     }
 }
