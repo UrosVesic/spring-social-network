@@ -3,10 +3,7 @@ package rs.ac.bg.fon.springsocialnetwork.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rs.ac.bg.fon.springsocialnetwork.mapper.*;
-import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
-import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
-import rs.ac.bg.fon.springsocialnetwork.repository.ReactionRepository;
-import rs.ac.bg.fon.springsocialnetwork.repository.TopicRepository;
+import rs.ac.bg.fon.springsocialnetwork.repository.*;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 
 /**
@@ -42,5 +39,15 @@ public class IocContainer {
     @Bean
     public ReactionMapper reactionMapper(PostRepository postRepository,AuthService authService){
         return new ReactionMapper(postRepository,authService);
+    }
+
+    @Bean
+    public PostReportRequestMapper postReportRequestMapper(PostRepository postRepository,AuthService authService){
+        return new PostReportRequestMapper(postRepository,authService);
+    }
+
+    @Bean
+    public ReportedPostMapper reportedPostMapper(PostReportRepository reportRepository){
+        return new ReportedPostMapper(reportRepository);
     }
 }
