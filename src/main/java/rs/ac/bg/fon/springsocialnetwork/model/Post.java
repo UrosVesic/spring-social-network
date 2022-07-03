@@ -32,6 +32,7 @@ public class Post implements MyEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topicId",referencedColumnName = "id")
     private Topic topic;
+    private Instant deletebByAdmin;
 
 
 }
