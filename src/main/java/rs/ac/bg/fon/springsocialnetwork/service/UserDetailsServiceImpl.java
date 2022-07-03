@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author UrosVesic
@@ -29,10 +32,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
                 true, true, true, true,
-                getAuthorities("ROLE_USER"));
+                getAuthorities(user));
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(String role_user) {
-        return Collections.singletonList(new SimpleGrantedAuthority(role_user));
+    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().stream().map(role->authorities.add(new SimpleGrantedAuthority(role.getName()))).collect(Collectors.toList());
+        return authorities;
     }
 }
