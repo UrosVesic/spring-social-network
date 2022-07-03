@@ -13,6 +13,7 @@ import rs.ac.bg.fon.springsocialnetwork.dto.LoginRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.RegisterRequest;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
+import rs.ac.bg.fon.springsocialnetwork.model.Role;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
@@ -45,9 +46,17 @@ public class AuthService {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authenticate);
             String token = jwtProvider.generateToken(authenticate);
-            return  new AuthResponse(token, loginRequest.getUsername());
+            return  new AuthResponse(token, loginRequest.getUsername(),isAdmin());
     }
 
+    private String isAdmin() {
+        User user = getCurrentUser();
+        for (Role role:user.getRoles()){
+            if(role.getName().equals("ADMIN"))
+                return "yes";
+        }
+        return "no";
+    }
 
 
     public User getCurrentUser(){
