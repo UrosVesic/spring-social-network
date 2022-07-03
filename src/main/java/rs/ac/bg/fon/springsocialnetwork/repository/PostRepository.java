@@ -12,10 +12,10 @@ import java.util.List;
  */
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByTopic(Topic topic);
+    List<Post> findByTopicAndDeletebByAdminIsNull(Topic topic);
 
-    List<Post> findAllByUser_username(String username);
+    List<Post> findAllByUser_usernameAndDeletebByAdminIsNull(String username);
 
 
-    List<Post> findByUser_userIdIn(List<Long> following);
+    List<Post> findByUser_userIdInAndDeletebByAdminIsNull(List<Long> following);
 }

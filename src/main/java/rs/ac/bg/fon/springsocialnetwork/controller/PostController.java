@@ -6,11 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
+import rs.ac.bg.fon.springsocialnetwork.dto.ReportedPostDto;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 import rs.ac.bg.fon.springsocialnetwork.service.PostService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author UrosVesic
@@ -54,6 +56,12 @@ public class PostController {
         return new ResponseEntity<>(postResponses,HttpStatus.OK);
     }
 
+    @PatchMapping("/soft-delete/{id}")
+    public ResponseEntity softDeletePost(@PathVariable Long id){
+        postService.softDeletePost(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity deletePost(@PathVariable Long id){
         postService.deletePost(id);
@@ -64,6 +72,18 @@ public class PostController {
     public ResponseEntity updatePost(@PathVariable Long id,@RequestBody PostRequest postRequest){
         postService.updatePost(id,postRequest);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/secured/reported")
+    public ResponseEntity<Set<ReportedPostDto>> getAllUnsolvedReportedPosts(){
+        Set<ReportedPostDto> reportedPosts= postService.getAllUnsolvedReportedPosts();
+        return new ResponseEntity<>(reportedPosts,HttpStatus.OK);
+    }
+
+    @GetMapping("/secured/reported-solved")
+    public ResponseEntity<Set<ReportedPostDto>> getAllSolvedReportedPosts(){
+        Set<ReportedPostDto> reportedPosts= postService.getAllSolvedReportedPosts();
+        return new ResponseEntity<>(reportedPosts,HttpStatus.OK);
     }
 
 }

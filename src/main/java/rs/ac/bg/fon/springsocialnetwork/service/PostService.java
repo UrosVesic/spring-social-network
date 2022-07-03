@@ -4,17 +4,22 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
+import rs.ac.bg.fon.springsocialnetwork.dto.ReportedPostDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.mapper.PostRequestMapper;
 import rs.ac.bg.fon.springsocialnetwork.mapper.PostMapper;
+import rs.ac.bg.fon.springsocialnetwork.mapper.ReportedPostMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Post;
+import rs.ac.bg.fon.springsocialnetwork.model.PostReport;
+import rs.ac.bg.fon.springsocialnetwork.model.ReportStatus;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.repository.PostReportRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.TopicRepository;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +34,8 @@ public class PostService {
     private PostRequestMapper postRequestMapper;
     private AuthService authService;
     private TopicRepository topicRepository;
+    private PostReportRepository postReportRepository;
+    private ReportedPostMapper reportedPostMapper;
 
     public List<PostResponse> getAllPosts(){
         List<Post> posts = postRepository.findAll();
@@ -53,7 +60,7 @@ public class PostService {
 
 
     public List<PostResponse> getAllPostsForUser(String username) {
-        List<Post> posts = postRepository.findAllByUser_username(username);
+        List<Post> posts = postRepository.findAllByUser_usernameAndDeletebByAdminIsNull(username);
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
     }
 
@@ -63,7 +70,7 @@ public class PostService {
 
     public List<PostResponse> getAllPostsForFollowingUsers() {
         User currentUser = authService.getCurrentUser();
-        List<Post> posts = postRepository.findByUser_userIdIn( currentUser.getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()));
+        List<Post> posts = postRepository.findByUser_userIdInAndDeletebByAdminIsNull( currentUser.getFollowing().stream().map(User::getUserId).collect(Collectors.toList()));
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
     }
 
@@ -73,5 +80,34 @@ public class PostService {
         post.setContent(postRequest.getContent());
         post.setTitle(postRequest.getTitle());
         postRepository.save(post);
+    }
+
+    public Set<ReportedPostDto> getAllUnsolvedReportedPosts() {
+        List<PostReport> postReports = postReportRepository.findAllByReportStatus(ReportStatus.UNSOLVED);
+        Set<Post> reportedPosts;
+        reportedPosts = postReports.stream().map(PostReport::getPost).collect(Collectors.toSet());
+        Set<ReportedPostDto> collect = reportedPosts.stream().map(post -> reportedPostMapper.toDto(post)).collect(Collectors.toSet());
+        return collect.stream().sorted((report1,report2)->report1.getReportCount()>report2.getReportCount()?-1:1).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<ReportedPostDto> getAllSolvedReportedPosts() {
+        List<ReportStatus> statuses = new ArrayList<>();
+        statuses.add(ReportStatus.APPROVED);
+        statuses.add(ReportStatus.DELETED);
+        List<PostReport> postReports = postReportRepository.findAllByReportStatusIn(statuses);
+        Set<Post> reportedPosts;
+        reportedPosts = postReports.stream().map(PostReport::getPost).collect(Collectors.toSet());
+        return reportedPosts.stream().map(post -> reportedPostMapper.toDto(post)).collect(Collectors.toSet());
+    }
+
+    public void softDeletePost(Long id) {
+        Optional<Post> optPost = postRepository.findById(id);
+        Post post = optPost.orElseThrow(()->new MyRuntimeException("Post not found"));
+        post.setDeletebByAdmin(Instant.now());
+        postRepository.save(post);
+        List<PostReport> postReports = postReportRepository.findByPost_id(id);
+        postReports.forEach(report->report.setReportStatus(ReportStatus.DELETED));
+        //postReports = postReports.stream().peek(report->report.setReportStatus(ReportStatus.DELETED)).collect(Collectors.toList());
+        postReportRepository.saveAll(postReports);
     }
 }
