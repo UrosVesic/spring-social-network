@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Builder
+@Table(name= "myuser")
 public class User implements MyEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
