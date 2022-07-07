@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class PostReportService {
 
     private PostReportRepository postReportRepository;
+    private PostRepository postRepository;
     PostReportRequestMapper mapper;
     public void reportPost(PostReportRequest request){
         PostReport postReport = mapper.toEntity(request);
@@ -36,10 +37,17 @@ public class PostReportService {
 
     public void changeReportStatus(ReportStatus reportStatus,Long postId) {
         List<PostReport> reports = postReportRepository.findByPost_id(postId);
-        reports = reports.stream().map(r->{
+        reports.forEach(r->{
+            if(r.getReportStatus().equals(reportStatus)){
+                throw new MyRuntimeException("Already has status: "+reportStatus);
+            }
+            if(reportStatus.equals(ReportStatus.APPROVED)){
+                Post post = postRepository.findById(postId).orElseThrow((() -> new MyRuntimeException("Post not found")));
+                post.setDeletebByAdmin(null);
+                postRepository.save(post);
+            }
             r.setReportStatus(reportStatus);
-            return r;
-        }).collect(Collectors.toList());
+        });
         postReportRepository.saveAll(reports);
     }
 }
