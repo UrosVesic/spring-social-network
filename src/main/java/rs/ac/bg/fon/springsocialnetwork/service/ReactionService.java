@@ -2,6 +2,7 @@ package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.springsocialnetwork.dto.ReactionDto;
 import rs.ac.bg.fon.springsocialnetwork.mapper.ReactionMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Reaction;
@@ -19,7 +20,7 @@ public class ReactionService {
     private ReactionRepository reactionRepository;
     private ReactionMapper reactionMapper;
     private AuthService authService;
-
+    @Transactional
     public void react(ReactionDto reactionDto){
         Optional<Reaction> reactOpt=reactionRepository.findByPost_idAndUser(reactionDto.getPostId(),authService.getCurrentUser());
         if(!reactOpt.isPresent()){

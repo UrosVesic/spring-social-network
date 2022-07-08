@@ -45,6 +45,7 @@ public class UserService {
         followRepository.save(following);
     }
 
+    @Transactional
     public void unfollow(User currentUser, String username){
         Optional<User> userOptFollowed = userRepository.findByUsername(username);
 
@@ -64,7 +65,7 @@ public class UserService {
         User user = userOpt.orElseThrow(()->new MyRuntimeException("User with id : "+id+" not found"));
         return userMapper.toDto(user);
     }
-
+    @Transactional
     public void unfollow(Long idFollowing, Long idFollowed) {
         Optional<User> userOptFollowing = userRepository.findById(idFollowing);
         Optional<User> userOptFollowed = userRepository.findById(idFollowed);
@@ -87,13 +88,14 @@ public class UserService {
         List<User> followers = user.getFollowers();
         return followers.stream().map((user1)->userMapper.toDto(user1)).collect(Collectors.toList());
     }*/
-
+    @Transactional
     public List<UserDto> getAllFollowersForUser(String username) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         User user = userOpt.orElseThrow(() -> new MyRuntimeException("User not found"));
         List<User> followers = user.getFollowers();
         return followers.stream().map((user1)->userMapper.toDto(user1)).collect(Collectors.toList());
     }
+    @Transactional
     public List<UserDto> getAllFollowingForUser(String username) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         User user = userOpt.orElseThrow(() -> new MyRuntimeException("User not found"));
@@ -101,12 +103,12 @@ public class UserService {
         return followers.stream().map((user1)->userMapper.toDto(user1)).collect(Collectors.toList());
     }
 
-
+    @Transactional
     public UserDto getProfileInfo(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(()->new MyRuntimeException("User not found"));
         return userMapper.toDto(user);
     }
-
+    @Transactional
     public List<UserDto> getAllSuggestedUsers() {
         List<User> notFollowing = userRepository.findByuserIdNotIn(authService.getCurrentUser().getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()));
         if(notFollowing.size()==0){
@@ -119,7 +121,7 @@ public class UserService {
                 ->user2.getMutualFollowers(authService.getCurrentUser())-user1.getMutualFollowers(authService.getCurrentUser()));
         return notFollowing.stream().map((user)->userMapper.toDto(user)).collect(Collectors.toList());
     }
-
+    @Transactional
     public void updateUser(UserDto userDto) {
         User user = userRepository.findById(userDto.getUserId()).orElseThrow(() -> new MyRuntimeException("User not found"));
         if(userRepository.findByUsername(userDto.getUsername()).isPresent() && !user.getUsername().equals(userDto.getUsername())){

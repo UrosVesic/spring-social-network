@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.fon.springsocialnetwork.dto.AuthResponse;
 import rs.ac.bg.fon.springsocialnetwork.dto.LoginRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.RegisterRequest;
@@ -17,6 +16,7 @@ import rs.ac.bg.fon.springsocialnetwork.model.Role;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -41,14 +41,13 @@ public class AuthService {
         user.setCreated(Instant.now());
         userRepository.save(user);
     }
-
+    @Transactional
     public AuthResponse login(LoginRequest loginRequest) {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authenticate);
             String token = jwtProvider.generateToken(authenticate);
             return  new AuthResponse(token, loginRequest.getUsername(),isAdmin());
     }
-
     private String isAdmin() {
         User user = getCurrentUser();
         for (Role role:user.getRoles()){
@@ -58,7 +57,7 @@ public class AuthService {
         return "no";
     }
 
-
+    @Transactional
     public User getCurrentUser(){
         String username=SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> currentUser = userRepository.findByUsername(username);

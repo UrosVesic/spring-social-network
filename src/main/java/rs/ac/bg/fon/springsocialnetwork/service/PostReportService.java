@@ -11,6 +11,7 @@ import rs.ac.bg.fon.springsocialnetwork.model.ReportStatus;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostReportRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class PostReportService {
     private PostReportRepository postReportRepository;
     private PostRepository postRepository;
     PostReportRequestMapper mapper;
+    @Transactional
     public void reportPost(PostReportRequest request){
         PostReport postReport = mapper.toEntity(request);
         List<PostReport> postReportsByPost = postReportRepository.findByPost_id(request.getPostId());
@@ -34,7 +36,7 @@ public class PostReportService {
         }
         postReportRepository.save(postReport);
     }
-
+    @Transactional
     public void changeReportStatus(ReportStatus reportStatus,Long postId) {
         List<PostReport> reports = postReportRepository.findByPost_id(postId);
         reports.forEach(r->{

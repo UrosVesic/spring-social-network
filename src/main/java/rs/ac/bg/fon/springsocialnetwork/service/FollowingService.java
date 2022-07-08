@@ -9,6 +9,7 @@ import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.FollowRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class FollowingService {
     private FollowRepository followRepository;
     private UserMapper userMapper;
 
-
+    @Transactional
     public List<UserDto> getFollowersForUser(Long userId) {
         List<Following> optFoll = followRepository.findAllByFollowed_userId(userId);
         List<User> followers = optFoll.stream().map(Following::getFollowing).collect(Collectors.toList());

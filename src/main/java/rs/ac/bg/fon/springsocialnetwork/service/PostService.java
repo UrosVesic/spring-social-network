@@ -63,7 +63,7 @@ public class PostService {
         List<Post> posts = postRepository.findAllByUser_usernameAndDeletebByAdminIsNull(username);
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
     }
-
+    @Transactional
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
@@ -73,7 +73,7 @@ public class PostService {
         List<Post> posts = postRepository.findByUser_userIdInAndDeletebByAdminIsNull( currentUser.getFollowing().stream().map(User::getUserId).collect(Collectors.toList()));
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
     }
-
+    @Transactional
     public void updatePost(Long id,PostRequest postRequest) {
         Post post = postRepository.findById(id).orElseThrow(()->new MyRuntimeException("Post not found"));
         post.setTopic(topicRepository.getByName(postRequest.getTopicName()).orElseThrow(()->new MyRuntimeException("Topic not found")));
@@ -81,7 +81,7 @@ public class PostService {
         post.setTitle(postRequest.getTitle());
         postRepository.save(post);
     }
-
+    @Transactional
     public Set<ReportedPostDto> getAllUnsolvedReportedPosts() {
         List<PostReport> postReports = postReportRepository.findAllByReportStatus(ReportStatus.UNSOLVED);
         Set<Post> reportedPosts;
@@ -89,7 +89,7 @@ public class PostService {
         Set<ReportedPostDto> collect = reportedPosts.stream().map(post -> reportedPostMapper.toDto(post)).collect(Collectors.toSet());
         return collect.stream().sorted((report1,report2)->report1.getReportCount()>report2.getReportCount()?-1:1).collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
+    @Transactional
     public Set<ReportedPostDto> getAllSolvedReportedPosts() {
         List<ReportStatus> statuses = new ArrayList<>();
         statuses.add(ReportStatus.APPROVED);
@@ -99,7 +99,7 @@ public class PostService {
         reportedPosts = postReports.stream().map(PostReport::getPost).collect(Collectors.toSet());
         return reportedPosts.stream().map(post -> reportedPostMapper.toDto(post)).collect(Collectors.toSet());
     }
-
+    @Transactional
     public void softDeletePost(Long id) {
         Optional<Post> optPost = postRepository.findById(id);
         Post post = optPost.orElseThrow(()->new MyRuntimeException("Post not found"));

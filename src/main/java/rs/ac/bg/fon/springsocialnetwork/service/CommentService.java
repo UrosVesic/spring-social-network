@@ -7,6 +7,7 @@ import rs.ac.bg.fon.springsocialnetwork.mapper.CommentMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Comment;
 import rs.ac.bg.fon.springsocialnetwork.repository.CommentRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,17 +19,17 @@ import java.util.stream.Collectors;
 public class CommentService {
     private CommentRepository commentRepository;
     private CommentMapper commentMapper;
-
+    @Transactional
     public void comment(CommentDto commentDto){
         Comment comment = commentMapper.toEntity(commentDto);
         commentRepository.save(comment);
     }
-
+    @Transactional
     public List<CommentDto> getAllCommentsForPost(Long postId) {
         List<Comment> comments = commentRepository.findByPost_idOrderByCreatedDateDesc(postId);
         return comments.stream().map((comment)->commentMapper.toDto(comment)).collect(Collectors.toList());
     }
-
+    @Transactional
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
     }
