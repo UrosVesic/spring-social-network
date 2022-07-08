@@ -54,4 +54,8 @@ public class User implements MyEntity{
                 .filter(two -> currentUser.getFollowers().stream().anyMatch(one -> one.getUsername().equals(two.getUsername()))).collect(Collectors.toList());
         return listOfMutualFoll.size();
     }
+
+    public void addRole(Role role){
+        roles.add(role);
+    }
 }
