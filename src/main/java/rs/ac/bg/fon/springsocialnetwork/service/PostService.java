@@ -58,7 +58,7 @@ public class PostService {
         return postResponseMapper.toDto(post);
     }
 
-
+    @Transactional
     public List<PostResponse> getAllPostsForUser(String username) {
         List<Post> posts = postRepository.findAllByUser_usernameAndDeletebByAdminIsNull(username);
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
