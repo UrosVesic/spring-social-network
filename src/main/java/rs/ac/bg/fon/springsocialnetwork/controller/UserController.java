@@ -29,6 +29,12 @@ public class UserController {
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
 
+    @PostMapping("/{username}/assign/{rolename}")
+    public ResponseEntity assignRole(@PathVariable String username,@PathVariable String rolename){
+        userService.assignRole(username,rolename);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PostMapping("/unfollow/{username}")
     public ResponseEntity unfollow(@PathVariable String username){
         userService.unfollow(authService.getCurrentUser(), username);

@@ -14,6 +14,7 @@ import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
 import rs.ac.bg.fon.springsocialnetwork.model.Role;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.repository.RoleRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -31,6 +32,7 @@ public class AuthService {
     private UserRepository userRepository;
     private AuthenticationManager authenticationManager;
     private JwtProvider jwtProvider;
+    private RoleRepository roleRepository;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -39,6 +41,8 @@ public class AuthService {
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated(Instant.now());
+        Role role = roleRepository.findByName("USER");
+        user.addRole(role);
         userRepository.save(user);
     }
     @Transactional

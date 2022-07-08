@@ -10,9 +10,11 @@ import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.mapper.UserMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Following;
+import rs.ac.bg.fon.springsocialnetwork.model.Role;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.model.idclasses.FollowingId;
 import rs.ac.bg.fon.springsocialnetwork.repository.FollowRepository;
+import rs.ac.bg.fon.springsocialnetwork.repository.RoleRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
 import java.time.Instant;
@@ -29,6 +31,7 @@ public class UserService {
     private FollowRepository followRepository;
     private UserMapper userMapper;
     private AuthService authService;
+    private RoleRepository roleRepository;
 
 
     @Transactional
@@ -133,6 +136,13 @@ public class UserService {
         user.setBio(userDto.getBio());
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
+        userRepository.save(user);
+    }
+
+    public void assignRole(String username,String rolename) {
+        Role role = roleRepository.findByName(rolename);
+        User user = userRepository.findByUsername(username).orElseThrow(()->new MyRuntimeException("User not found"));
+        user.addRole(role);
         userRepository.save(user);
     }
 }
