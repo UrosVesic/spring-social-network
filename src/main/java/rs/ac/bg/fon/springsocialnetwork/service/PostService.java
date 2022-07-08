@@ -68,6 +68,7 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    @Transactional
     public List<PostResponse> getAllPostsForFollowingUsers() {
         User currentUser = authService.getCurrentUser();
         List<Post> posts = postRepository.findByUser_userIdInAndDeletebByAdminIsNull( currentUser.getFollowing().stream().map(User::getUserId).collect(Collectors.toList()));
