@@ -36,7 +36,7 @@ public class PostService {
     private TopicRepository topicRepository;
     private PostReportRepository postReportRepository;
     private ReportedPostMapper reportedPostMapper;
-
+    @Transactional
     public List<PostResponse> getAllPosts(){
         List<Post> posts = postRepository.findAll();
         List<PostResponse> collect = posts.stream().map((post) -> postResponseMapper.toDto(post)).collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class PostService {
         postRepository.save(post);
         return postResponseMapper.toDto(post);
     }
-
+    @Transactional
     public PostResponse getPost(Long id) {
         Post post = postRepository.getById(id);
         return postResponseMapper.toDto(post);
