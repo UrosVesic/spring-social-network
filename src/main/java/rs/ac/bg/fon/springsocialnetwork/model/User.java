@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.Instant;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +57,9 @@ public class User implements MyEntity{
     }
 
     public void addRole(Role role){
+        if(roles==null){
+            roles = new LinkedHashSet<>();
+        }
         roles.add(role);
     }
 }
