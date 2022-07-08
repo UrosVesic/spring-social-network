@@ -20,6 +20,7 @@ public class TopicService {
     private TopicRepository topicRepository;
     private TopicMapper topicMapper;
 
+    @Transactional
     public List<TopicDto> getAllTopics(){
         List<Topic> topics = topicRepository.findAll();
         return topics.stream().map((topic)->topicMapper.toDto(topic)).collect(Collectors.toList());
