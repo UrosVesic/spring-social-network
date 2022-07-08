@@ -28,11 +28,13 @@ public class User implements MyEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     @NotBlank(message = "Username is required")
+    @Column(unique = true)
     private String username;
     @NotBlank(message = "Password is required")
     private String password;
     @Email
     @NotBlank(message = "Email is required")
+    @Column(unique = true)
     private String email;
     private Instant created;
     private String bio;
