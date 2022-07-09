@@ -72,6 +72,7 @@ public class PostService {
     public List<PostResponse> getAllPostsForFollowingUsers() {
         User currentUser = authService.getCurrentUser();
         List<Post> posts = postRepository.findByUser_userIdInAndDeletebByAdminIsNull( currentUser.getFollowing().stream().map(User::getUserId).collect(Collectors.toList()));
+        posts = posts.stream().sorted(Comparator.comparing(Post::getCreatedDate).reversed()).collect(Collectors.toList());
         return posts.stream().map((post)->postResponseMapper.toDto(post)).collect(Collectors.toList());
     }
     @Transactional
