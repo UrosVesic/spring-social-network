@@ -31,13 +31,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User with "+username+" not found"));
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
-                true, true, true, true,
+                user.isEnabled(), true, true, true,
                 getAuthorities(user));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().stream().map(role->authorities.add(new SimpleGrantedAuthority(role.getName()))).collect(Collectors.toList());
+        user.getRoles().forEach(role->authorities.add(new SimpleGrantedAuthority(role.getName())));
         return authorities;
     }
 }
