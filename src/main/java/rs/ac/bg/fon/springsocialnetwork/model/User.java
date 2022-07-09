@@ -9,10 +9,9 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +30,7 @@ public class User implements MyEntity{
     @Column(unique = true)
     private String username;
     @NotBlank(message = "Password is required")
+    @NotNull(message = "Password is required")
     private String password;
     @Email
     @NotBlank(message = "Email is required")
@@ -38,6 +38,7 @@ public class User implements MyEntity{
     private String email;
     private Instant created;
     private String bio;
+    private boolean isEnabled;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "following",
             joinColumns = @JoinColumn(name = "following_user_id"),
@@ -63,5 +64,9 @@ public class User implements MyEntity{
             roles = new LinkedHashSet<>();
         }
         roles.add(role);
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }
