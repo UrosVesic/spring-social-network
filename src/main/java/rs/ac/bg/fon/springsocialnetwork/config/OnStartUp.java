@@ -12,8 +12,10 @@ import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.springsocialnetwork.dto.RegisterRequest;
 import rs.ac.bg.fon.springsocialnetwork.model.Role;
 import rs.ac.bg.fon.springsocialnetwork.repository.RoleRepository;
+import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 import rs.ac.bg.fon.springsocialnetwork.service.RoleService;
+import rs.ac.bg.fon.springsocialnetwork.service.UserService;
 
 /**
  *
@@ -26,6 +28,8 @@ public class OnStartUp {
     private RoleService roleService;
     private RoleRepository roleRepository;
     private AuthService authService;
+    private UserService userService;
+    private UserRepository userRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
@@ -35,7 +39,10 @@ public class OnStartUp {
         if (!roleRepository.findByName("ADMIN").isPresent()) {
             roleService.addRole(new Role(null, "ADMIN", "Social network administrator"));
         }
-        authService.signup(new RegisterRequest("uros@uros.com", "uros99", "uros99"));
+        if (!userRepository.findByUsername("uros99").isPresent()) {
+            authService.signup(new RegisterRequest("uros@uros.com", "uros99", "uros99"));
+        }
+        userService.assignRole("uros99", "ADMIN");
     }
 
 }
