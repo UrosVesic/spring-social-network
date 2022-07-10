@@ -140,7 +140,7 @@ public class UserService {
     }
 
     public void assignRole(String username,String rolename) {
-        Role role = roleRepository.findByName(rolename);
+        Role role = roleRepository.findByName(rolename).orElseThrow(()->new MyRuntimeException(("Role not found")));
         User user = userRepository.findByUsername(username).orElseThrow(()->new MyRuntimeException("User not found"));
         user.addRole(role);
         userRepository.save(user);
