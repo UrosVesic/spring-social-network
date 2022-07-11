@@ -33,13 +33,13 @@ public class OnStartUp {
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
-        if (!roleRepository.findByName("USER").isPresent()) {
+        if (!roleRepository.existsByName("USER")) {
             roleService.addRole(new Role(null, "USER", "Social network registrated user"));
         }
-        if (!roleRepository.findByName("ADMIN").isPresent()) {
+        if (!roleRepository.existsByName("ADMIN")) {
             roleService.addRole(new Role(null, "ADMIN", "Social network administrator"));
         }
-        if (!userRepository.findByUsername("uros99").isPresent()) {
+        if (!userRepository.existsByUsername("uros99")) {
             authService.signup(new RegisterRequest("uros@uros.com", "uros99", "uros99"));
             userService.assignRole("uros99", "ADMIN");
         }
