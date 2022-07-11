@@ -1,6 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -51,6 +52,11 @@ public class AuthController {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public  ResponseEntity<String> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex){
+        return new ResponseEntity<>("Username or email already exists",HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public  ResponseEntity<String> handleDataIntegrityViolationException(){
         return new ResponseEntity<>("Username or email already exists",HttpStatus.BAD_REQUEST);
     }
 
