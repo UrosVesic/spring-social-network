@@ -50,4 +50,9 @@ public class IocContainer {
     public ReportedPostMapper reportedPostMapper(PostReportRepository reportRepository){
         return new ReportedPostMapper(reportRepository);
     }
+
+    @Bean
+    public ReportedUserMapper reportedUserMapper(PostReportRepository postReportRepository){
+        return new ReportedUserMapper(postReportRepository);
+    }
 }

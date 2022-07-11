@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.bg.fon.springsocialnetwork.dto.ReportedUserDto;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.ErrorResponse;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
@@ -24,7 +25,7 @@ public class UserController {
     private AuthService authService;
 
     @PostMapping(value = "/follow/{username}")
-    public ResponseEntity<String> follow(@PathVariable String username){
+    public ResponseEntity follow(@PathVariable String username){
         userService.follow(authService.getCurrentUser(), username);
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
@@ -67,6 +68,24 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllSuggestedUsers(){
         List<UserDto> users = userService.getAllSuggestedUsers();
         return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @GetMapping("/reported")
+    public ResponseEntity<List<ReportedUserDto>> getAllReportedUsers(){
+        List<ReportedUserDto> reportedUserDtos = userService.getReportedUsers();
+        return new ResponseEntity<>(reportedUserDtos,HttpStatus.OK);
+    }
+
+    @PatchMapping("/disable/{username}")
+    public ResponseEntity disableUser(@PathVariable String username){
+        userService.disableUser(username);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PatchMapping("/enable/{username}")
+    public ResponseEntity enable(@PathVariable String username){
+        userService.enableUser(username);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/followers/{username}")

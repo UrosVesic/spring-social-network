@@ -9,4 +9,6 @@ import rs.ac.bg.fon.springsocialnetwork.model.Role;
  */
 public interface RoleRepository extends JpaRepository<Role,Long> {
     Optional<Role> findByName(String name);
+
+    boolean existsByName(String user);
 }

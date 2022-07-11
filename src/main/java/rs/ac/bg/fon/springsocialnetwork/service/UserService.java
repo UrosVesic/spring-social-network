@@ -6,14 +6,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rs.ac.bg.fon.springsocialnetwork.dto.ReportedUserDto;
 import rs.ac.bg.fon.springsocialnetwork.dto.UserDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
+import rs.ac.bg.fon.springsocialnetwork.mapper.ReportedUserMapper;
 import rs.ac.bg.fon.springsocialnetwork.mapper.UserMapper;
-import rs.ac.bg.fon.springsocialnetwork.model.Following;
-import rs.ac.bg.fon.springsocialnetwork.model.Role;
-import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.model.*;
 import rs.ac.bg.fon.springsocialnetwork.model.idclasses.FollowingId;
 import rs.ac.bg.fon.springsocialnetwork.repository.FollowRepository;
+import rs.ac.bg.fon.springsocialnetwork.repository.PostReportRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.RoleRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
@@ -32,6 +33,8 @@ public class UserService {
     private UserMapper userMapper;
     private AuthService authService;
     private RoleRepository roleRepository;
+    private PostReportRepository postReportRepository;
+    private ReportedUserMapper reportedUserMapper;
 
 
     @Transactional
@@ -143,6 +146,24 @@ public class UserService {
         Role role = roleRepository.findByName(rolename).orElseThrow(()->new MyRuntimeException(("Role not found")));
         User user = userRepository.findByUsername(username).orElseThrow(()->new MyRuntimeException("User not found"));
         user.addRole(role);
+        userRepository.save(user);
+    }
+
+    public List<ReportedUserDto> getReportedUsers() {
+        List<PostReport> postReports =postReportRepository.findByReportStatus(ReportStatus.DELETED);
+        List<User> users = postReports.stream().map(report->report.getPost().getUser()).collect(Collectors.toList());
+        return users.stream().distinct().map(user->reportedUserMapper.toDto(user)).collect(Collectors.toList());
+    }
+
+    public void disableUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(()->new MyRuntimeException("User not found"));
+        user.setEnabled(false);
+        userRepository.save(user);
+    }
+
+    public void enableUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(()->new MyRuntimeException("User not found"));
+        user.setEnabled(true);
         userRepository.save(user);
     }
 }
