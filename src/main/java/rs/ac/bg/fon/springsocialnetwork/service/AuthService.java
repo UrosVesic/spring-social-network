@@ -14,12 +14,16 @@ import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
 import rs.ac.bg.fon.springsocialnetwork.model.Role;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.model.VerificationEmail;
+import rs.ac.bg.fon.springsocialnetwork.model.VerificationToken;
 import rs.ac.bg.fon.springsocialnetwork.repository.RoleRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
+import rs.ac.bg.fon.springsocialnetwork.repository.VerificationTokenRepository;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author UrosVesic
@@ -33,6 +37,8 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
     private JwtProvider jwtProvider;
     private RoleRepository roleRepository;
+    private VerificationTokenRepository verificationTokenRepository;
+    private MailService mailService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -41,11 +47,25 @@ public class AuthService {
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated(Instant.now());
-        user.setEnabled(true);
+        user.setEnabled(false);
         Role role = roleRepository.findByName("USER").orElseThrow(()->new MyRuntimeException(("Role not found")));
         user.addRole(role);
         userRepository.save(user);
+        String token = generateVerificationToken(user);
+
+        mailService.sendMail(new VerificationEmail("Please Activate your Account",
+                user.getEmail(), "Thank you for signing up to Spring Social Network, " +
+                "please click on the below url to activate your account : " +
+                "http://localhost:8080/api/auth/activate/" + token));
     }
+
+    private String generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+        VerificationToken vt = new VerificationToken(null,token,user);
+        verificationTokenRepository.save(vt);
+        return token;
+    }
+
     @Transactional
     public AuthResponse login(LoginRequest loginRequest) {
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -67,5 +87,14 @@ public class AuthService {
         String username=SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> currentUser = userRepository.findByUsername(username);
         return currentUser.orElseThrow(()->new MyRuntimeException("Current user not found"));
+    }
+
+    public void activateAccount(String token) {
+        VerificationToken verificationToken
+                = verificationTokenRepository.findByToken(token)
+                .orElseThrow(()->new MyRuntimeException("Token not found"));
+        User user = verificationToken.getUser();
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 }

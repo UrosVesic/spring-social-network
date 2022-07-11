@@ -31,6 +31,13 @@ import java.util.stream.Collectors;
 public class AuthController {
 
     private AuthService authService;
+
+    @GetMapping("/activate/{token}")
+    public ResponseEntity<String> activateAccount(@PathVariable String token){
+        authService.activateAccount(token);
+        return new ResponseEntity("Acount succesfuly activated, you can close this page now",HttpStatus.OK);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody @Valid RegisterRequest registerRequest){
         authService.signup(registerRequest);
