@@ -1,6 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +32,11 @@ public class TopicController {
     public ResponseEntity createTopic(@RequestBody TopicDto topic){
         topicService.createTopic(topic);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public  ResponseEntity<String> handleDataIntegrityViolationException(){
+        return new ResponseEntity<>("Topic with given name already exists",HttpStatus.BAD_REQUEST);
     }
 
 }

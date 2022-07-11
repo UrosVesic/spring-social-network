@@ -21,6 +21,7 @@ public class Topic implements MyEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Topic name is required")
+    @Column(unique = true)
     private String name;
     @NotBlank(message = "Description is required")
     private String description;
