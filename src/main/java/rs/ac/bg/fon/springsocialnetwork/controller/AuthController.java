@@ -57,7 +57,7 @@ public class AuthController {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public  ResponseEntity<String> handleDataIntegrityViolationException(){
-        return new ResponseEntity<>("Username or email already exists",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Account with given username or email already exists",HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
