@@ -56,8 +56,8 @@ CREATE TABLE `following` (
   `followed_at` datetime DEFAULT NULL,
   PRIMARY KEY (`followed_user_id`,`following_user_id`),
   UNIQUE KEY `Unique_pracenje` (`following_user_id`,`followed_user_id`),
-  CONSTRAINT `FKhnf5bu72nsc7ov7ovsdoq5ykt` FOREIGN KEY (`following_user_id`) REFERENCES `myuser` (`user_id`),
-  CONSTRAINT `FKjmyjyxkmthtw6bu6q75bn6cjc` FOREIGN KEY (`followed_user_id`) REFERENCES `myuser` (`user_id`),
+  CONSTRAINT `following_ibfk_2` FOREIGN KEY (`followed_user_id`) REFERENCES `myuser` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `following_ibfk_3` FOREIGN KEY (`following_user_id`) REFERENCES `myuser` (`user_id`) ON DELETE CASCADE,
   CONSTRAINT `c1` CHECK ((`following_user_id` <> `followed_user_id`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -67,6 +67,7 @@ insert  into `following`(`following_user_id`,`followed_user_id`,`followed_at`) v
 (5,1,'2022-06-27 00:15:49'),
 (6,1,'2022-07-09 13:11:26'),
 (11,1,'2022-07-03 13:18:37'),
+(24,1,'2022-07-11 23:51:02'),
 (1,5,'2022-06-25 23:59:40'),
 (6,5,'2022-06-19 01:57:52'),
 (11,5,'2022-07-03 13:18:36'),
@@ -89,7 +90,7 @@ CREATE TABLE `myuser` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `Unique_username` (`username`),
   UNIQUE KEY `Unique_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `myuser` */
 
@@ -100,7 +101,9 @@ insert  into `myuser`(`user_id`,`username`,`email`,`password`,`created`,`bio`,`i
 (7,'aaa','aa@aaa.com','$2a$10$qeXyMnG0aub3Lh8NkkT85u9/4g944xDxWYUAOJD3Mc34MB8JjUNgS','2022-06-19 00:37:46','Sam svoj gazda!',1,NULL),
 (8,'novi','noviuser@gmail.com','$2a$10$iXp1DEdCAyO296TsrvDLNuqpglzai/kXdOyYPx2tqrillVtCi2zLO','2022-06-19 00:38:44',NULL,1,NULL),
 (10,'caos','novsam@gmai.com','$2a$10$o2pu9FypXItJ5uBW6s5Ij.T1GcpE7moLXrPsdHVDdQBloct4F4Uxa','2022-06-19 20:07:35',NULL,1,NULL),
-(11,'zika','zika@zika.com','$2a$10$nT/RxI2aDZg5KBId/TekdeyLR3WJGtrEO68YeFRsVR/lJdrgKnUVW','2022-06-19 20:09:02',NULL,1,NULL);
+(11,'zika','zika@zika.com','$2a$10$nT/RxI2aDZg5KBId/TekdeyLR3WJGtrEO68YeFRsVR/lJdrgKnUVW','2022-06-19 20:09:02',NULL,1,NULL),
+(23,'uvesic','uvesic999@gmail.com','$2a$10$GQvz5luyL.jyS5n9lTKmKOMT24T8GtclUzJLABsoP/jVTLIo.GQpm','2022-07-11 23:39:29',NULL,1,NULL),
+(24,'urosvesic','uros99uki@gmail.com','$2a$10$aXvwFqgiiJu3NcdbKJVax.ewmRvSg52JtgxmvuuU1DpM1bDbDQWJa','2022-07-11 23:50:16',NULL,1,NULL);
 
 /*Table structure for table `post` */
 
@@ -128,9 +131,9 @@ insert  into `post`(`id`,`content`,`created_date`,`title`,`topic_id`,`user_id`,`
 (4,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras erat sem, euismod vitae nisl sit amet, congue condimentum nulla. Morbi risus quam, mattis a massa et, tristique lobortis elit. Suspendisse vulputate, magna in consequat rhoncus, lorem urna imperdiet eros, non mattis augue diam nec lectus. Vivamus lacinia turpis lacus, vitae aliquam metus tempor faucibus. Nulla facilisis lectus non iaculis feugiat. Nam vitae ex vitae urna posuere varius a sit amet mauris. Duis euismod ac neque in tincidunt.\r\n','2022-06-20 23:43:17.000000','Lorem2',1,1,NULL),
 (43,'<p>dasdas</p>','2022-06-24 21:10:44.606375','dasd',2,1,NULL),
 (44,'<p>dasdasdas</p>','2022-06-24 21:10:50.914541','dasdasd',2,1,NULL),
-(45,'<p>dasdasdas</p>','2022-06-24 21:10:59.458774','dasdas',1,1,NULL),
+(45,'<p>dasdasdas</p>','2022-06-24 21:10:59.458774','dasdas',1,1,'2022-07-11 18:06:50.410000'),
 (47,'<p>fsdfsdfs</p>','2022-06-24 22:15:18.054806','fsdf',1,1,NULL),
-(48,'<p>Cao ja sam Mika!!Pozdrav za sve pratioce!!</p>','2022-06-26 15:35:29.228594','Pozdrav ekipa!!!',2,5,NULL),
+(48,'<p>Cao ja sam Mika!!Pozdrav za sve pratioce!!</p>','2022-06-26 15:35:29.228594','Pozdrav ekipa!!!',2,5,'2022-07-11 19:22:01.655000'),
 (49,'<p>SRBIJA DO TOKIJA</p>','2022-07-03 13:18:29.393207','CAO JA SAM ZIKA',2,11,NULL);
 
 /*Table structure for table `post_report` */
@@ -153,11 +156,11 @@ CREATE TABLE `post_report` (
 /*Data for the table `post_report` */
 
 insert  into `post_report`(`id`,`user_id`,`post_id`,`report_type`,`report_status`) values 
-(7,1,48,2,1),
+(7,1,48,2,2),
 (8,11,3,2,1),
 (9,11,4,2,1),
 (10,5,43,2,0),
-(16,5,45,2,0);
+(16,5,45,2,2);
 
 /*Table structure for table `reaction` */
 
@@ -171,9 +174,9 @@ CREATE TABLE `reaction` (
   PRIMARY KEY (`id`),
   KEY `post_id` (`post_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `reaction_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
-  CONSTRAINT `reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `myuser` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `reaction_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `myuser` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `reaction` */
 
@@ -196,7 +199,8 @@ insert  into `reaction`(`id`,`reaction_type`,`post_id`,`user_id`) values
 (120,0,3,6),
 (121,1,4,6),
 (122,0,43,6),
-(123,0,49,1);
+(123,0,49,1),
+(127,0,47,24);
 
 /*Table structure for table `role` */
 
@@ -275,7 +279,28 @@ insert  into `user_roles`(`user_id`,`role_id`) values
 (8,1),
 (10,1),
 (11,1),
+(23,1),
+(24,1),
 (1,2);
+
+/*Table structure for table `verification_token` */
+
+DROP TABLE IF EXISTS `verification_token`;
+
+CREATE TABLE `verification_token` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `token` varchar(255) DEFAULT NULL,
+  `user_user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKs6a82vcvosvakyopdhih7s4xk` (`user_user_id`),
+  CONSTRAINT `FKs6a82vcvosvakyopdhih7s4xk` FOREIGN KEY (`user_user_id`) REFERENCES `myuser` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `verification_token` */
+
+insert  into `verification_token`(`id`,`token`,`user_user_id`) values 
+(6,'3e528d0a-1149-4ea9-b9ae-01db336c1470',23),
+(7,'1ea9dca4-9362-4ee4-b27d-aeced71b89a9',24);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
