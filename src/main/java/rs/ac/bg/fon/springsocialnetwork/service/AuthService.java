@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import rs.ac.bg.fon.springsocialnetwork.config.AppConfig;
 import rs.ac.bg.fon.springsocialnetwork.dto.AuthResponse;
 import rs.ac.bg.fon.springsocialnetwork.dto.LoginRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.RegisterRequest;
@@ -39,6 +40,7 @@ public class AuthService {
     private RoleRepository roleRepository;
     private VerificationTokenRepository verificationTokenRepository;
     private MailService mailService;
+    private AppConfig appConfig;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -56,7 +58,7 @@ public class AuthService {
         mailService.sendMail(new VerificationEmail("Please Activate your Account",
                 user.getEmail(), "Thank you for signing up to Spring Social Network, " +
                 "please click on the below url to activate your account : " +
-                "http://localhost:8080/api/auth/activate/" + token));
+                appConfig.getUrl()+"/api/auth/activate/" + token));
     }
 
     private String generateVerificationToken(User user) {
