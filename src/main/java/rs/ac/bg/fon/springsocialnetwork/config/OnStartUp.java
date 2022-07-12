@@ -41,6 +41,7 @@ public class OnStartUp {
         }
         if (!userRepository.existsByUsername("uros99")) {
             authService.signup(new RegisterRequest("uros@uros.com", "uros99", "uros99"));
+            userService.enableUser("uros99");
             userService.assignRole("uros99", "ADMIN");
         }
     }
