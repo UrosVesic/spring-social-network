@@ -167,6 +167,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(String username) {
         userRepository.deleteByUsername(username);
     }
