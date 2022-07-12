@@ -48,7 +48,7 @@ public class User implements MyEntity{
     @ManyToMany(mappedBy = "following",fetch = FetchType.LAZY)
     private List<User> followers;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles"
             ,joinColumns = {@JoinColumn(name = "userId")}
             ,inverseJoinColumns = {@JoinColumn(name="roleId")})
