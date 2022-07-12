@@ -166,4 +166,8 @@ public class UserService {
         user.setEnabled(true);
         userRepository.save(user);
     }
+
+    public void deleteUser(String username) {
+        userRepository.deleteByUsername(username);
+    }
 }
