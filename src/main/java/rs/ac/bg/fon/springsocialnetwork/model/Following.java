@@ -18,11 +18,11 @@ import java.time.Instant;
 @IdClass(FollowingId.class)
 public class Following implements MyEntity{
     @Id
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "following_user_id", nullable = false)
     private User following;
     @Id
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "followed_user_id", nullable = false)
     private User followed;
     private Instant followedAt;

@@ -21,10 +21,10 @@ public class Reaction implements MyEntity{
     private Long id;
     private ReactionType reactionType;
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "postId", referencedColumnName = "id")
     private Post post;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 
