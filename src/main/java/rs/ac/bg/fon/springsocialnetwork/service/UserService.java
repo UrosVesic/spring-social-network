@@ -149,6 +149,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public List<ReportedUserDto> getReportedUsers() {
         List<PostReport> postReports =postReportRepository.findByReportStatus(ReportStatus.DELETED);
         List<User> users = postReports.stream().map(report->report.getPost().getUser()).collect(Collectors.toList());
