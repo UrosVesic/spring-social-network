@@ -12,11 +12,12 @@ public class WebSocketService {
 
 
 
-    public void sendMessage() {
-        messagingTemplate.convertAndSend("/topic", "Default message from our WS service");
+    public void sendMessage(String username) {
+        messagingTemplate.convertAndSend("/topic/"+username, "Default message from our WS service");
     }
 
-    public void sendMessage(final String payload) {
-        messagingTemplate.convertAndSend("/topic", payload);
+    public void sendMessage(String to, String suffix) {
+        messagingTemplate.convertAndSendToUser(to,"/topic","");
+
     }
 }
