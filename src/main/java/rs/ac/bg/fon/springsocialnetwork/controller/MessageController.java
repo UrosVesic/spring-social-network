@@ -17,9 +17,9 @@ public class MessageController {
 
     private MessageService messageService;
 
-    @PostMapping
-    public ResponseEntity sendMessage(@RequestBody Message message){
-        messageService.saveMessage(message);
+    @PostMapping("/{id}")
+    public ResponseEntity sendMessage(@PathVariable String id,@RequestBody MessageDto messageDto){
+        messageService.saveMessage(messageDto,id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -27,5 +27,17 @@ public class MessageController {
     public ResponseEntity<List<MessageDto>> getAllMessages(){
         List<MessageDto> allMessages = messageService.getAllMessages();
         return new ResponseEntity<>(allMessages,HttpStatus.OK);
+    }
+
+    @GetMapping("/last/{from}/{to}")
+    public ResponseEntity<MessageDto> getLastMessage(@PathVariable String from, @PathVariable String to){
+        MessageDto dto = messageService.getLastMesage(from,to);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{from}/{to}")
+    public ResponseEntity<List<MessageDto>> getAllFromChat(@PathVariable String from, @PathVariable String to){
+        List<MessageDto> allFromChat = messageService.getAllFromChat(from, to);
+        return new ResponseEntity<>(allFromChat,HttpStatus.OK);
     }
 }

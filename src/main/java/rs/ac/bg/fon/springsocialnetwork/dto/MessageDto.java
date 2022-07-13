@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageDto {
+public class MessageDto implements Dto{
 
     String from;
     String to;
     String content;
+    String time;
 
 }
