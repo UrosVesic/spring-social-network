@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import rs.ac.bg.fon.springsocialnetwork.mapper.*;
 import rs.ac.bg.fon.springsocialnetwork.repository.*;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
+import rs.ac.bg.fon.springsocialnetwork.websockettest.UserHandshakeHandler;
 
 /**
  * @author UrosVesic
@@ -54,5 +55,14 @@ public class IocContainer {
     @Bean
     public ReportedUserMapper reportedUserMapper(PostReportRepository postReportRepository){
         return new ReportedUserMapper(postReportRepository);
+    }
+
+    @Bean
+    public MessageMapper messageMapper(UserRepository userRepository){
+        return new MessageMapper(userRepository);
+    }
+    @Bean
+    public UserHandshakeHandler userHandshakeHandler(){
+        return new UserHandshakeHandler();
     }
 }
