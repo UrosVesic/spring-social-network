@@ -67,12 +67,33 @@ insert  into `following`(`following_user_id`,`followed_user_id`,`followed_at`) v
 (5,1,'2022-06-27 00:15:49'),
 (6,1,'2022-07-09 13:11:26'),
 (11,1,'2022-07-03 13:18:37'),
-(24,1,'2022-07-11 23:51:02'),
 (1,5,'2022-06-25 23:59:40'),
 (6,5,'2022-06-19 01:57:52'),
 (11,5,'2022-07-03 13:18:36'),
+(1,6,'2022-07-13 20:51:10'),
+(1,7,'2022-07-13 18:55:03'),
 (5,7,'2022-07-09 14:30:19'),
-(1,11,'2022-07-04 18:08:32');
+(1,11,'2022-07-13 17:02:17'),
+(1,23,'2022-07-13 17:02:30');
+
+/*Table structure for table `message` */
+
+DROP TABLE IF EXISTS `message`;
+
+CREATE TABLE `message` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `content` varchar(255) DEFAULT NULL,
+  `from_user_id` bigint(20) NOT NULL,
+  `to_user_id` bigint(20) NOT NULL,
+  `sent_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKtgk95qvnhwlgn2hpeujq88bro` (`from_user_id`),
+  KEY `FKtr1mugve3laxicatc86n651ec` (`to_user_id`),
+  CONSTRAINT `FKtgk95qvnhwlgn2hpeujq88bro` FOREIGN KEY (`from_user_id`) REFERENCES `myuser` (`user_id`),
+  CONSTRAINT `FKtr1mugve3laxicatc86n651ec` FOREIGN KEY (`to_user_id`) REFERENCES `myuser` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `message` */
 
 /*Table structure for table `myuser` */
 
@@ -96,14 +117,13 @@ CREATE TABLE `myuser` (
 
 insert  into `myuser`(`user_id`,`username`,`email`,`password`,`created`,`bio`,`is_enabled`,`aa`) values 
 (1,'uros99','urosvesicpo@gmail.com','$2a$10$ftZr1vqPUKBxTkg1ubHoZecVOvYjxq3bWvYh.v5r3LesQZqvlBTJ6','2022-06-17 19:07:12','Uros Vesic-FON',1,NULL),
-(5,'mika','mikamikic@gmail.com','$2a$10$JmV2AommW1r7joTNQusKf.D2o/UB4ZbFiAuXtRWNSzHLP.DwFSdqO','2022-06-17 21:58:41','Mika Mikic-FON',0,NULL),
+(5,'mika','mikamikic@gmail.com','$2a$10$JmV2AommW1r7joTNQusKf.D2o/UB4ZbFiAuXtRWNSzHLP.DwFSdqO','2022-06-17 21:58:41','Mika Mikic-FON',1,NULL),
 (6,'pera','pera@gmail.com','$2a$10$2QI4SlxQQccMuz.01ZoZ0er9f51lMn4HdBrV.wMkFNjdLlpQ7JUk6','2022-06-17 22:03:39',NULL,1,NULL),
 (7,'aaa','aa@aaa.com','$2a$10$qeXyMnG0aub3Lh8NkkT85u9/4g944xDxWYUAOJD3Mc34MB8JjUNgS','2022-06-19 00:37:46','Sam svoj gazda!',1,NULL),
 (8,'novi','noviuser@gmail.com','$2a$10$iXp1DEdCAyO296TsrvDLNuqpglzai/kXdOyYPx2tqrillVtCi2zLO','2022-06-19 00:38:44',NULL,1,NULL),
 (10,'caos','novsam@gmai.com','$2a$10$o2pu9FypXItJ5uBW6s5Ij.T1GcpE7moLXrPsdHVDdQBloct4F4Uxa','2022-06-19 20:07:35',NULL,1,NULL),
 (11,'zika','zika@zika.com','$2a$10$nT/RxI2aDZg5KBId/TekdeyLR3WJGtrEO68YeFRsVR/lJdrgKnUVW','2022-06-19 20:09:02',NULL,1,NULL),
-(23,'uvesic','uvesic999@gmail.com','$2a$10$GQvz5luyL.jyS5n9lTKmKOMT24T8GtclUzJLABsoP/jVTLIo.GQpm','2022-07-11 23:39:29',NULL,1,NULL),
-(24,'urosvesic','uros99uki@gmail.com','$2a$10$aXvwFqgiiJu3NcdbKJVax.ewmRvSg52JtgxmvuuU1DpM1bDbDQWJa','2022-07-11 23:50:16',NULL,1,NULL);
+(23,'uvesic','uvesic999@gmail.com','$2a$10$GQvz5luyL.jyS5n9lTKmKOMT24T8GtclUzJLABsoP/jVTLIo.GQpm','2022-07-11 23:39:29',NULL,1,NULL);
 
 /*Table structure for table `post` */
 
@@ -118,23 +138,24 @@ CREATE TABLE `post` (
   `user_id` bigint(20) DEFAULT NULL,
   `deleteb_by_admin` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKg8ln3nj8tjclai0nuvpw5s5uw` (`topic_id`),
-  KEY `FK72mt33dhhs48hf9gcqrq4fxte` (`user_id`),
-  CONSTRAINT `FK72mt33dhhs48hf9gcqrq4fxte` FOREIGN KEY (`user_id`) REFERENCES `myuser` (`user_id`),
-  CONSTRAINT `FKg8ln3nj8tjclai0nuvpw5s5uw` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `topic_id` (`topic_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `post_ibfk_1` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`),
+  CONSTRAINT `post_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `myuser` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `post` */
 
 insert  into `post`(`id`,`content`,`created_date`,`title`,`topic_id`,`user_id`,`deleteb_by_admin`) values 
-(3,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras erat sem, euismod vitae nisl sit amet, congue condimentum nulla. Morbi risus quam, mattis a massa et, tristique lobortis elit. Suspendisse vulputate, magna in consequat rhoncus, lorem urna imperdiet eros, non mattis augue diam nec lectus. Vivamus lacinia turpis lacus, vitae aliquam metus tempor faucibus. Nulla facilisis lectus non iaculis feugiat. Nam vitae ex vitae urna posuere varius a sit amet mauris. Duis euismod ac neque in tincidunt.\r\n\r\n','2022-06-20 23:42:59.000000','Lorem1',1,1,NULL),
+(3,'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras erat sem, euismod vitae nisl sit amet, congue condimentum nulla. Morbi risus quam, mattis a massa et, tristique lobortis elit. Suspendisse vulputate, magna in consequat rhoncus, lorem urna imperdiet eros, non mattis augue diam nec lectus. Vivamus lacinia turpis lacus, vitae aliquam metus tempor faucibus. Nulla facilisis lectus non iaculis feugiat. Nam vitae ex vitae urna posuere varius a sit amet mauris. Duis euismod ac neque in tincidunt.</p>','2022-06-20 23:42:59.000000','Lorem1',1,1,NULL),
 (4,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras erat sem, euismod vitae nisl sit amet, congue condimentum nulla. Morbi risus quam, mattis a massa et, tristique lobortis elit. Suspendisse vulputate, magna in consequat rhoncus, lorem urna imperdiet eros, non mattis augue diam nec lectus. Vivamus lacinia turpis lacus, vitae aliquam metus tempor faucibus. Nulla facilisis lectus non iaculis feugiat. Nam vitae ex vitae urna posuere varius a sit amet mauris. Duis euismod ac neque in tincidunt.\r\n','2022-06-20 23:43:17.000000','Lorem2',1,1,NULL),
 (43,'<p>dasdas</p>','2022-06-24 21:10:44.606375','dasd',2,1,NULL),
 (44,'<p>dasdasdas</p>','2022-06-24 21:10:50.914541','dasdasd',2,1,NULL),
 (45,'<p>dasdasdas</p>','2022-06-24 21:10:59.458774','dasdas',1,1,'2022-07-11 18:06:50.410000'),
 (47,'<p>fsdfsdfs</p>','2022-06-24 22:15:18.054806','fsdf',1,1,NULL),
 (48,'<p>Cao ja sam Mika!!Pozdrav za sve pratioce!!</p>','2022-06-26 15:35:29.228594','Pozdrav ekipa!!!',2,5,'2022-07-11 19:22:01.655000'),
-(49,'<p>SRBIJA DO TOKIJA</p>','2022-07-03 13:18:29.393207','CAO JA SAM ZIKA',2,11,NULL);
+(49,'<p>SRBIJA DO TOKIJA</p>','2022-07-03 13:18:29.393207','CAO JA SAM ZIKA',2,11,NULL),
+(50,'<p>Moj post</p>','2022-07-13 20:51:34.985973','Perin post',2,6,NULL);
 
 /*Table structure for table `post_report` */
 
@@ -173,10 +194,10 @@ CREATE TABLE `reaction` (
   `user_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `post_id` (`post_id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `reaction_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `myuser` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `reaction_ibfk_6` (`user_id`),
+  CONSTRAINT `reaction_ibfk_5` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
+  CONSTRAINT `reaction_ibfk_6` FOREIGN KEY (`user_id`) REFERENCES `myuser` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `reaction` */
 
@@ -199,8 +220,7 @@ insert  into `reaction`(`id`,`reaction_type`,`post_id`,`user_id`) values
 (120,0,3,6),
 (121,1,4,6),
 (122,0,43,6),
-(123,0,49,1),
-(127,0,47,24);
+(135,0,49,1);
 
 /*Table structure for table `role` */
 
@@ -231,8 +251,8 @@ CREATE TABLE `topic` (
   `user_user_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKevuv7p02842lhi77hguyhcgos` (`user_user_id`),
-  CONSTRAINT `FKevuv7p02842lhi77hguyhcgos` FOREIGN KEY (`user_user_id`) REFERENCES `myuser` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `topic_ibfk_1` FOREIGN KEY (`user_user_id`) REFERENCES `myuser` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `topic` */
 
@@ -280,7 +300,6 @@ insert  into `user_roles`(`user_id`,`role_id`) values
 (10,1),
 (11,1),
 (23,1),
-(24,1),
 (1,2);
 
 /*Table structure for table `verification_token` */
@@ -299,8 +318,7 @@ CREATE TABLE `verification_token` (
 /*Data for the table `verification_token` */
 
 insert  into `verification_token`(`id`,`token`,`user_user_id`) values 
-(6,'3e528d0a-1149-4ea9-b9ae-01db336c1470',23),
-(7,'1ea9dca4-9362-4ee4-b27d-aeced71b89a9',24);
+(6,'3e528d0a-1149-4ea9-b9ae-01db336c1470',23);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
