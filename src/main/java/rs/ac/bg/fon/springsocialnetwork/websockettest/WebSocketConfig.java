@@ -24,16 +24,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
 
     @Override
-    public void configureMessageBroker(final MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker( "/chatroom","/user");
-        registry.setApplicationDestinationPrefixes("/app");
-        registry.setUserDestinationPrefix("/user");
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/ws");
     }
 
     @Override
-    public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*")
-                .withSockJS();
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/sba-websocket").setAllowedOriginPatterns("*").withSockJS();
     }
 
 }
