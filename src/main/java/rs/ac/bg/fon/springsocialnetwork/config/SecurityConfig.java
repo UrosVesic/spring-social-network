@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers(HttpMethod.DELETE,"/api/user/**")
                         .hasAuthority("ADMIN")
                         .antMatchers("/api/message/**")
-                        .permitAll()
+                        .hasAuthority("USER")
                         .anyRequest()
                         .authenticated());
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
