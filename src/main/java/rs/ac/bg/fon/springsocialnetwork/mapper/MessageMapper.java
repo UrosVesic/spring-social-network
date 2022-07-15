@@ -7,8 +7,10 @@ import rs.ac.bg.fon.springsocialnetwork.model.Message;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalField;
+import java.util.TimeZone;
 
 /**
  * @author UrosVesic
@@ -34,14 +36,14 @@ public class MessageMapper implements GenericMapper<MessageDto, Message>{
         dto.setContent(entity.getContent());
         dto.setFrom(entity.getFrom().getUsername());
         dto.setTo(entity.getTo().getUsername());
-        int minute = entity.getSentAt().atZone(ZoneOffset.UTC).getMinute();
+        int minute = entity.getSentAt().atZone(ZoneId.of("ECT",ZoneId.SHORT_IDS)).getMinute();
         String min;
         if(minute<10){
             min = "0"+minute;
         }else{
             min = minute+"";
         }
-        dto.setTime(entity.getSentAt().atZone(ZoneOffset.UTC).getHour()+":"+min);
+        dto.setTime(entity.getSentAt().atZone(ZoneId.of("ECT",ZoneId.SHORT_IDS)).getHour()+":"+min);
         return dto;
     }
 }
