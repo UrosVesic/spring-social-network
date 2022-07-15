@@ -25,6 +25,7 @@ public class Post implements MyEntity{
     private String title;
     @Nullable
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
