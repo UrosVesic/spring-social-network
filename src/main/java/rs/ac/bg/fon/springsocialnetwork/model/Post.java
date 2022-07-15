@@ -3,6 +3,7 @@ package rs.ac.bg.fon.springsocialnetwork.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class Post implements MyEntity{
     @NotBlank(message = "Post Name cannot be empty or Null")
     private String title;
     @Nullable
+    @Lob
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
