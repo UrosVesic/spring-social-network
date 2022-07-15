@@ -34,7 +34,14 @@ public class MessageMapper implements GenericMapper<MessageDto, Message>{
         dto.setContent(entity.getContent());
         dto.setFrom(entity.getFrom().getUsername());
         dto.setTo(entity.getTo().getUsername());
-        dto.setTime(entity.getSentAt().atZone(ZoneOffset.UTC).getHour()+":"+entity.getSentAt().atZone(ZoneOffset.UTC).getMinute());
+        int minute = entity.getSentAt().atZone(ZoneOffset.UTC).getMinute();
+        String min;
+        if(minute<10){
+            min = "0"+minute;
+        }else{
+            min = minute+"";
+        }
+        dto.setTime(entity.getSentAt().atZone(ZoneOffset.UTC).getHour()+":"+min);
         return dto;
     }
 }
