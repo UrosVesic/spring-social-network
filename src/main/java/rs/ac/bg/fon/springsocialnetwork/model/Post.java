@@ -23,7 +23,7 @@ public class Post implements MyEntity{
     private Long id;
     @NotBlank(message = "Post Name cannot be empty or Null")
     private String title;
-    @Nullable
+
     @Column(columnDefinition="text")
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
