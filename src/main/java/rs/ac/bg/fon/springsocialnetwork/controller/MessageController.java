@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.bg.fon.springsocialnetwork.dto.InboxMessageDto;
 import rs.ac.bg.fon.springsocialnetwork.dto.MessageDto;
-import rs.ac.bg.fon.springsocialnetwork.model.Message;
 import rs.ac.bg.fon.springsocialnetwork.service.MessageService;
 
 import java.util.List;
@@ -39,5 +39,11 @@ public class MessageController {
     public ResponseEntity<List<MessageDto>> getAllFromChat(@PathVariable String from, @PathVariable String to){
         List<MessageDto> allFromChat = messageService.getAllFromChat(from, to);
         return new ResponseEntity<>(allFromChat,HttpStatus.OK);
+    }
+
+    @GetMapping("/inbox")
+    public ResponseEntity<List<InboxMessageDto>> inboxMessages(){
+        List<InboxMessageDto> inboxMessages = messageService.inboxMessages();
+        return new ResponseEntity<>(inboxMessages,HttpStatus.OK);
     }
 }

@@ -10,4 +10,6 @@ public interface MessageRepository extends JpaRepository<Message,Long> {
     Optional<Message> findTopByTo_usernameAndFrom_usernameOrderByIdDesc(String to,String from);
 
     List<Message> findByTo_usernameAndFrom_username(String from, String to);
+
+    List<Message> findByTo_usernameOrFrom_usernameOrderByIdDesc(String from,String to);
 }
