@@ -12,6 +12,12 @@ import rs.ac.bg.fon.springsocialnetwork.websockettest.UserHandshakeHandler;
  */
 @Configuration
 public class IocContainer {
+
+    @Bean
+
+    public InboxMessageMapper inboxMessageMapper(AuthService authService){
+        return new InboxMessageMapper(authService);
+    }
     @Bean
     public UserMapper userMapper(AuthService authService){
         return new UserMapper(authService);
