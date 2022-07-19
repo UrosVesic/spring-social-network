@@ -8,8 +8,10 @@ import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.mapper.InboxMessageMapper;
 import rs.ac.bg.fon.springsocialnetwork.mapper.MessageMapper;
 import rs.ac.bg.fon.springsocialnetwork.model.Message;
+import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.MessageRepository;
 
+import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public class MessageService {
     private InboxMessageMapper inboxMessageMapper;
     private AuthService authService;
     public void saveMessage(MessageDto messageDto,String id){
-        messageRepository.save(messageMapper.toEntity(messageDto));
+        messageRepository.saveAndFlush(messageMapper.toEntity(messageDto));
         //String suffix = "/"+messageDto.getFrom()+"/"+messageDto.getTo();
         webSocketService.sendMessage(id);
     }
@@ -40,7 +42,7 @@ public class MessageService {
     }
 
     public MessageDto getLastMesage(String from, String to) {
-        Optional<Message> message = messageRepository.findTopByTo_usernameAndFrom_usernameOrderByIdDesc(from,to);
+        Optional<Message> message = messageRepository.findTopByFrom_usernameAndTo_usernameOrderByIdDesc(from,to);
         return messageMapper.toDto(message.orElseThrow(()->new MyRuntimeException("Message not found")));
     }
 
@@ -53,8 +55,10 @@ public class MessageService {
     }
 
     public List<InboxMessageDto> inboxMessages() {
-        List<Message> messagesOfCurrentUser = messageRepository.findByTo_usernameOrFrom_usernameOrderByIdDesc(authService.getCurrentUser().getUsername(),authService.getCurrentUser().getUsername());
-        List<InboxMessageDto> inbox = messagesOfCurrentUser.stream().map(msg -> inboxMessageMapper.toDto(msg)).collect(Collectors.toList());
+        User user = authService.getCurrentUser();
+        String username = user.getUsername();
+        List<Message> messagesOfCurrentUser = messageRepository.findByTo_usernameOrFrom_usernameOrderByIdDesc(username, username);
+        List<InboxMessageDto> inbox = messagesOfCurrentUser.stream().map(msg -> inboxMessageMapper.toDto(msg,user)).collect(Collectors.toList());
         return inbox.stream().filter(distinctByKey(InboxMessageDto::getWith)).collect(Collectors.toList());
     }
 
