@@ -14,7 +14,15 @@ import rs.ac.bg.fon.springsocialnetwork.websockettest.UserHandshakeHandler;
 public class IocContainer {
 
     @Bean
+    public NotificationBuilder notificationBuilder(AuthService authService){
+        return new NotificationBuilder(authService);
+    }
 
+    @Bean
+    public NotificationMapper notificationMapper(){
+        return new NotificationMapper();
+    }
+    @Bean
     public InboxMessageMapper inboxMessageMapper(AuthService authService){
         return new InboxMessageMapper(authService);
     }
