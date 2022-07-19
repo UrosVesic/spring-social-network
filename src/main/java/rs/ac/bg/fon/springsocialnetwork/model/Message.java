@@ -14,13 +14,13 @@ import java.time.Instant;
 public class Message implements MyEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String content;
+    private Long id;
+    private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id", nullable = false)
-    User from;
+    private User from;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id", nullable = false)
-    User to;
-    Instant sentAt;
+    private User to;
+    private Instant sentAt;
 }
