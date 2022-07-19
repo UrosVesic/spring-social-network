@@ -116,7 +116,7 @@ public class UserService {
     }
     @Transactional
     public List<UserDto> getAllSuggestedUsers() {
-        List<User> notFollowing = userRepository.findByuserIdNotIn(authService.getCurrentUser().getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()));
+        List<User> notFollowing = userRepository.findByuserIdNotInAndIsEnabled(authService.getCurrentUser().getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()),true);
         if(notFollowing.size()==0){
             List<Long> myId=new ArrayList<>();
             myId.add(authService.getCurrentUser().getUserId());

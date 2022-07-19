@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     boolean existsByUsername(String uros99);
 
     void deleteByUsername(String username);
+
+    List<User> findByuserIdNotInAndIsEnabled(List<Long> collect,boolean enabled);
 }
