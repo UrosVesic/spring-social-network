@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.springsocialnetwork.dto.InboxMessageDto;
 import rs.ac.bg.fon.springsocialnetwork.dto.MessageDto;
+import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.service.MessageService;
 
 import java.util.List;
@@ -45,5 +46,11 @@ public class MessageController {
     public ResponseEntity<List<InboxMessageDto>> inboxMessages(){
         List<InboxMessageDto> inboxMessages = messageService.inboxMessages();
         return new ResponseEntity<>(inboxMessages,HttpStatus.OK);
+    }
+
+    @ExceptionHandler(MyRuntimeException.class)
+    public ResponseEntity handleMyRuntimeEx(){
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
