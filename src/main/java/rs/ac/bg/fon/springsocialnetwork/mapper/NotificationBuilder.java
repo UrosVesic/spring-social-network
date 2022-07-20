@@ -2,10 +2,7 @@ package rs.ac.bg.fon.springsocialnetwork.mapper;
 
 import lombok.AllArgsConstructor;
 import rs.ac.bg.fon.springsocialnetwork.dto.ReactionDto;
-import rs.ac.bg.fon.springsocialnetwork.model.Notification;
-import rs.ac.bg.fon.springsocialnetwork.model.NotificationType;
-import rs.ac.bg.fon.springsocialnetwork.model.Reaction;
-import rs.ac.bg.fon.springsocialnetwork.model.ReactionType;
+import rs.ac.bg.fon.springsocialnetwork.model.*;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 
 import java.time.Instant;
@@ -26,6 +23,17 @@ public class NotificationBuilder {
         not.setPost(react.getPost());
         not.setRead(false);
         not.setNotificationType(setNotificationType(react.getReactionType()));
+        return not;
+    }
+
+    public Notification createNotificationForComment(Comment comment){
+        Notification not = new Notification();
+        not.setFrom(comment.getUser());
+        not.setTo(comment.getPost().getUser());
+        not.setCreated_at(Instant.now());
+        not.setPost(comment.getPost());
+        not.setRead(false);
+        not.setNotificationType(NotificationType.COMMENT);
         return not;
     }
 
