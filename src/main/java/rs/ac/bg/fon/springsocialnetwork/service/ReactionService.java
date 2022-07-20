@@ -43,6 +43,8 @@ public class ReactionService {
         }else{
             reactionRepository.delete(reaction);
             reactionRepository.save(reactionEntity);
+            Notification not = notificationBuilder.createNotificationForReaction(reactionEntity);
+            notificationService.save(not);
         }
 
     }
