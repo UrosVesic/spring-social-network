@@ -18,6 +18,11 @@ public class WebSocketService {
 
     public void sendMessage(String to, String suffix) {
         messagingTemplate.convertAndSendToUser(to,"/topic","");
-
     }
+
+    public void sendNotificationToUser(String username,String notificationType){
+        messagingTemplate.convertAndSend("/topic/notification/"+username,notificationType);
+    }
+
+
 }
