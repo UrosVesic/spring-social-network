@@ -23,4 +23,5 @@ public class Message implements MyEntity{
     @JoinColumn(name = "to_user_id", nullable = false)
     private User to;
     private Instant sentAt;
+    private Instant seenAt;
 }
