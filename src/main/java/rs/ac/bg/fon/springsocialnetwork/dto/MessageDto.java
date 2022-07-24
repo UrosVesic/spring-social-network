@@ -13,5 +13,6 @@ public class MessageDto implements Dto{
     String to;
     String content;
     String time;
+    boolean seen;
 
 }
