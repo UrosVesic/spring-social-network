@@ -44,6 +44,7 @@ public class MessageMapper implements GenericMapper<MessageDto, Message>{
             min = minute+"";
         }
         dto.setTime(entity.getSentAt().atZone(ZoneId.of("ECT",ZoneId.SHORT_IDS)).getHour()+":"+min);
+        dto.setSeen(entity.getSeenAt()==null?false:true);
         return dto;
     }
 }
