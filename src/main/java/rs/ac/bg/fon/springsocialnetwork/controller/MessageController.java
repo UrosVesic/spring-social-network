@@ -24,10 +24,22 @@ public class MessageController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/new-msg-count")
+    public ResponseEntity<Integer> getNewMsgCount(){
+        Integer newMsgCount = messageService.getNewMsgCount();
+        return new ResponseEntity<>(newMsgCount,HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<MessageDto>> getAllMessages(){
         List<MessageDto> allMessages = messageService.getAllMessages();
         return new ResponseEntity<>(allMessages,HttpStatus.OK);
+    }
+
+    @PatchMapping("/read/{username}")
+    public ResponseEntity readMessagesFrom(@PathVariable String username){
+        messageService.readMessagesFrom(username);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/last/{from}/{to}")

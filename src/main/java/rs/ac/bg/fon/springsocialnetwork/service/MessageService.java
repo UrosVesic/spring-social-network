@@ -12,6 +12,7 @@ import rs.ac.bg.fon.springsocialnetwork.model.User;
 import rs.ac.bg.fon.springsocialnetwork.repository.MessageRepository;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +33,8 @@ public class MessageService {
     private AuthService authService;
     public void saveMessage(MessageDto messageDto,String id){
         messageRepository.saveAndFlush(messageMapper.toEntity(messageDto));
-        //String suffix = "/"+messageDto.getFrom()+"/"+messageDto.getTo();
         webSocketService.sendMessage(id);
+        webSocketService.sendNotificationToUser(id,"message");
     }
 
     public List<MessageDto> getAllMessages(){
@@ -42,14 +43,23 @@ public class MessageService {
     }
 
     public MessageDto getLastMesage(String from, String to) {
-        Optional<Message> message = messageRepository.findTopByFrom_usernameAndTo_usernameOrderByIdDesc(from,to);
-        return messageMapper.toDto(message.orElseThrow(()->new MyRuntimeException("Message not found")));
+        Optional<Message> optMessage = messageRepository.findTopByFrom_usernameAndTo_usernameOrderByIdDesc(from,to);
+        Message message = optMessage.orElseThrow(() -> new MyRuntimeException("Message not found"));
+        if(message.getSeenAt()==null){
+            message.setSeenAt(Instant.now());
+        }
+        return messageMapper.toDto(message);
     }
 
     public List<MessageDto> getAllFromChat(String from, String to) {
         List<Message> messages1 = messageRepository.findByTo_usernameAndFrom_username(from,to);
         List<Message> messages2 = messageRepository.findByTo_usernameAndFrom_username(to,from);
         messages2.forEach(m->messages1.add(m));
+
+        List<Message> notSeen = messages1.stream().filter(message -> message.getSeenAt() == null).collect(Collectors.toList());
+        notSeen.forEach(m->m.setSeenAt(Instant.now()));
+        messageRepository.saveAll(notSeen);
+
         messages1.sort(Comparator.comparing(Message::getSentAt));
         return messages1.stream().map(m->messageMapper.toDto(m)).collect(Collectors.toList());
     }
@@ -65,5 +75,15 @@ public class MessageService {
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    public Integer getNewMsgCount() {
+        return messageRepository.countByTo_usernameAndSeenAt(authService.getCurrentUser().getUsername(), null);
+    }
+
+    public void readMessagesFrom(String username) {
+        List<Message> messages = messageRepository.findByFrom_usernameAndSeenAt(username,null);
+        messages.stream().forEach(m->m.setSeenAt(Instant.now()));
+        messageRepository.saveAll(messages);
     }
 }
