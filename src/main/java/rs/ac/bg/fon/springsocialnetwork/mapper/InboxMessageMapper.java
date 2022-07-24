@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import rs.ac.bg.fon.springsocialnetwork.dto.InboxMessageDto;
 import rs.ac.bg.fon.springsocialnetwork.model.Message;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.repository.MessageRepository;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 
 import java.time.ZoneId;
@@ -15,6 +16,7 @@ import java.time.ZoneId;
 public class InboxMessageMapper implements GenericMapper<InboxMessageDto, Message> {
 
     private AuthService authService;
+    private MessageRepository messageRepository;
 
     @Override
     public Message toEntity(InboxMessageDto dto) {
@@ -24,7 +26,6 @@ public class InboxMessageMapper implements GenericMapper<InboxMessageDto, Messag
     @Override
     public InboxMessageDto toDto(Message entity) {
         InboxMessageDto dto = new InboxMessageDto();
-
         dto.setContent(setContent(entity.getContent()));
         int minute = entity.getSentAt().atZone(ZoneId.of("ECT",ZoneId.SHORT_IDS)).getMinute();
         String min;
@@ -39,7 +40,9 @@ public class InboxMessageMapper implements GenericMapper<InboxMessageDto, Messag
 
     public InboxMessageDto toDto(Message entity, User currentUser){
         InboxMessageDto dto = toDto(entity);
-        dto.setWith(setWith(entity,currentUser));
+        String with = setWith(entity, currentUser);
+        dto.setWith(with);
+        dto.setNewMessages(messageRepository.countByTo_usernameAndFrom_usernameAndSeenAt(authService.getCurrentUser().getUsername(),with,null));
         return dto;
     }
 
