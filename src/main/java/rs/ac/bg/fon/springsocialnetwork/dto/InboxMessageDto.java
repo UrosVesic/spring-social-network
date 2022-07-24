@@ -14,4 +14,5 @@ public class InboxMessageDto implements Dto{
     String with;
     String content;
     String time;
+    int newMessages;
 }
