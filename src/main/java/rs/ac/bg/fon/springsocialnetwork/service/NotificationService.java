@@ -20,19 +20,17 @@ import java.util.stream.Collectors;
 @Service
 public class NotificationService {
 
-    private SimpMessagingTemplate messagingTemplate;
+    private WebSocketService webSocketService;
     private NotificationRepository notificationRepository;
     private NotificationMapper notificationMapper;
     private AuthService authService;
 
     public void save(Notification notification){
         notificationRepository.save(notification);
-        sendNotificationToUser(notification.getTo().getUsername());
+        webSocketService.sendNotificationToUser(notification.getTo().getUsername(),"notification");
     }
 
-    public void sendNotificationToUser(String username){
-        messagingTemplate.convertAndSend("/topic/notification/"+username,"Default message");
-    }
+
 
     public NotificationDto getLastNotificationForUser(String username) {
         Notification notification = notificationRepository.findTopByTo_usernameOrderByIdDesc(username).orElseThrow(() -> new MyRuntimeException("Notification not found"));
