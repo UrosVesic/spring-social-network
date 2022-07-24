@@ -23,8 +23,8 @@ public class IocContainer {
         return new NotificationMapper();
     }
     @Bean
-    public InboxMessageMapper inboxMessageMapper(AuthService authService){
-        return new InboxMessageMapper(authService);
+    public InboxMessageMapper inboxMessageMapper(AuthService authService,MessageRepository messageRepository){
+        return new InboxMessageMapper(authService,messageRepository);
     }
     @Bean
     public UserMapper userMapper(AuthService authService){
