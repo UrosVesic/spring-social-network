@@ -10,12 +10,17 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.springsocialnetwork.dto.RegisterRequest;
+import rs.ac.bg.fon.springsocialnetwork.model.Message;
 import rs.ac.bg.fon.springsocialnetwork.model.Role;
+import rs.ac.bg.fon.springsocialnetwork.repository.MessageRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.RoleRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.UserRepository;
 import rs.ac.bg.fon.springsocialnetwork.service.AuthService;
 import rs.ac.bg.fon.springsocialnetwork.service.RoleService;
 import rs.ac.bg.fon.springsocialnetwork.service.UserService;
+
+import java.time.Instant;
+import java.util.List;
 
 /**
  *
@@ -30,6 +35,7 @@ public class OnStartUp {
     private AuthService authService;
     private UserService userService;
     private UserRepository userRepository;
+    private MessageRepository messageRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
@@ -44,6 +50,9 @@ public class OnStartUp {
             userService.enableUser("uros99");
             userService.assignRole("uros99", "ADMIN");
         }
+        List<Message> all = messageRepository.findAll();
+        all.forEach(m->m.setSeenAt(Instant.now()));
+        messageRepository.saveAll(all);
     }
 
 }
