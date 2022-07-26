@@ -86,4 +86,10 @@ public class MessageService {
         messages.stream().forEach(m->m.setSeenAt(Instant.now()));
         messageRepository.saveAll(messages);
     }
+
+    public void delete(Long id) {
+        Message message = messageRepository.findById(id).orElseThrow(() -> new MyRuntimeException("not found"));
+        messageRepository.delete(message);
+
+    }
 }

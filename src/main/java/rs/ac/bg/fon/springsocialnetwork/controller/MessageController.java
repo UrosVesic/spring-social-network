@@ -3,13 +3,17 @@ package rs.ac.bg.fon.springsocialnetwork.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.springsocialnetwork.dto.InboxMessageDto;
 import rs.ac.bg.fon.springsocialnetwork.dto.MessageDto;
 import rs.ac.bg.fon.springsocialnetwork.exception.MyRuntimeException;
 import rs.ac.bg.fon.springsocialnetwork.service.MessageService;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/message")
@@ -19,7 +23,7 @@ public class MessageController {
     private MessageService messageService;
 
     @PostMapping("/{id}")
-    public ResponseEntity sendMessage(@PathVariable String id,@RequestBody MessageDto messageDto){
+    public ResponseEntity sendMessage(@PathVariable String id,@RequestBody @Valid MessageDto messageDto){
         messageService.saveMessage(messageDto,id);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -60,9 +64,22 @@ public class MessageController {
         return new ResponseEntity<>(inboxMessages,HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteMessage(@PathVariable Long id){
+        messageService.delete(id);
+    }
+
     @ExceptionHandler(MyRuntimeException.class)
     public ResponseEntity handleMyRuntimeEx(){
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public  ResponseEntity<List<String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+        List<ObjectError> allErrors = ex.getAllErrors();
+        List<String> collect = allErrors.stream().map(err -> err.getDefaultMessage()).collect(Collectors.toList());
+        return new ResponseEntity<>(collect,HttpStatus.BAD_REQUEST);
     }
 }
