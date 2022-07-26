@@ -50,9 +50,7 @@ public class OnStartUp {
             userService.enableUser("uros99");
             userService.assignRole("uros99", "ADMIN");
         }
-        List<Message> all = messageRepository.findAll();
-        all.forEach(m->m.setSeenAt(Instant.now()));
-        messageRepository.saveAll(all);
+
     }
 
 }
