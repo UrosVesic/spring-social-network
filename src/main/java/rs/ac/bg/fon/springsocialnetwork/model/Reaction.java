@@ -3,6 +3,8 @@ package rs.ac.bg.fon.springsocialnetwork.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,6 +25,7 @@ public class Reaction implements MyEntity{
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")

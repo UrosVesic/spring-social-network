@@ -3,6 +3,8 @@ package rs.ac.bg.fon.springsocialnetwork.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -27,6 +29,7 @@ public class Notification implements MyEntity{
     private User to;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
     @Column(name = "marked_as_read")
     private boolean read;

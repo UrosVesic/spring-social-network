@@ -1,6 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
@@ -13,6 +14,7 @@ import rs.ac.bg.fon.springsocialnetwork.model.Post;
 import rs.ac.bg.fon.springsocialnetwork.model.PostReport;
 import rs.ac.bg.fon.springsocialnetwork.model.ReportStatus;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.repository.MyRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostReportRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.PostRepository;
 import rs.ac.bg.fon.springsocialnetwork.repository.TopicRepository;
@@ -36,11 +38,12 @@ public class PostService {
     private TopicRepository topicRepository;
     private PostReportRepository postReportRepository;
     private ReportedPostMapper reportedPostMapper;
+    private ApplicationContext context;
     @Transactional
     public List<PostResponse> getAllPosts(){
         List<Post> posts = postRepository.findAll();
         List<PostResponse> collect = posts.stream().map((post) -> postResponseMapper.toDto(post)).collect(Collectors.toList());
-        Collections.sort(collect,(PostResponse p1,PostResponse p2)->p1.getLikes()-p1.getDislikes()>p2.getLikes()-p2.getDislikes()?-1:1);
+        Collections.sort(collect,(p1,p2)->p1.getLikes()-p1.getDislikes());
         return collect;
 
     }
@@ -65,6 +68,8 @@ public class PostService {
     }
     @Transactional
     public void deletePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new MyRuntimeException("Post not found"));
+        post.returnChildRepositories(context).forEach(r->r.deleteByParent(post));
         postRepository.deleteById(id);
     }
 

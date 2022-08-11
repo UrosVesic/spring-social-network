@@ -1,10 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import rs.ac.bg.fon.springsocialnetwork.model.Post;
-import rs.ac.bg.fon.springsocialnetwork.model.PostReport;
-import rs.ac.bg.fon.springsocialnetwork.model.ReportStatus;
-import rs.ac.bg.fon.springsocialnetwork.model.User;
+import rs.ac.bg.fon.springsocialnetwork.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +9,15 @@ import java.util.Optional;
 /**
  * @author UrosVesic
  */
-public interface PostReportRepository extends JpaRepository<PostReport,Long> {
+public interface PostReportRepository extends JpaRepository<PostReport,Long>,MyRepository {
+
+    @Override
+    default void deleteByParent(MyEntity parent) {
+        deleteAllByPost((Post) parent);
+    }
+
+    public void deleteAllByPost(Post post);
+
     Long countByPost(Post post);
 
     Optional<PostReport> findFirstByPost(Post post);
