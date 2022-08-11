@@ -1,6 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.mapper;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.springsocialnetwork.dto.InboxMessageDto;
 import rs.ac.bg.fon.springsocialnetwork.model.Message;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
@@ -13,6 +14,7 @@ import java.time.ZoneId;
  * @author UrosVesic
  */
 @AllArgsConstructor
+@Component
 public class InboxMessageMapper implements GenericMapper<InboxMessageDto, Message> {
 
     private AuthService authService;

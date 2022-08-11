@@ -22,10 +22,10 @@ public class IocContainer {
     public NotificationMapper notificationMapper(){
         return new NotificationMapper();
     }
-    @Bean
+    /*@Bean
     public InboxMessageMapper inboxMessageMapper(AuthService authService,MessageRepository messageRepository){
         return new InboxMessageMapper(authService,messageRepository);
-    }
+    }*/
     @Bean
     public UserMapper userMapper(AuthService authService){
         return new UserMapper(authService);
