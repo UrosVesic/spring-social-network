@@ -1,6 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.dto.InboxMessageDto;
 import rs.ac.bg.fon.springsocialnetwork.dto.MessageDto;
@@ -56,9 +57,12 @@ public class MessageService {
         List<Message> messages2 = messageRepository.findByTo_usernameAndFrom_username(to,from);
         messages2.forEach(m->messages1.add(m));
 
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
         List<Message> notSeen = messages1.stream().filter(message -> message.getSeenAt() == null).collect(Collectors.toList());
-        notSeen.forEach(m->m.setSeenAt(Instant.now()));
+        notSeen.stream().filter(m->!m.getFrom().getUsername().equals(currentUser)).forEach(m->m.setSeenAt(Instant.now()));
         messageRepository.saveAll(notSeen);
+
 
         messages1.sort(Comparator.comparing(Message::getSentAt));
         return messages1.stream().map(m->messageMapper.toDto(m)).collect(Collectors.toList());
