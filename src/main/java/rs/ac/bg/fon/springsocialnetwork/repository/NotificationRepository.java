@@ -1,9 +1,7 @@
 package rs.ac.bg.fon.springsocialnetwork.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import rs.ac.bg.fon.springsocialnetwork.model.MyEntity;
-import rs.ac.bg.fon.springsocialnetwork.model.Notification;
-import rs.ac.bg.fon.springsocialnetwork.model.Post;
+import rs.ac.bg.fon.springsocialnetwork.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,4 +21,8 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
     Optional<Notification> findTopByTo_usernameOrderByIdDesc(String username);
 
     List<Notification> findByTo_usernameOrderByIdDesc(String username);
+
+    Optional<Notification> findByFromAndToAndPostAndNotificationType(User from, User to, Post post, NotificationType notificationType);
+
+    Optional<Notification> findByFromAndToAndPost(User from, User to, Post post);
 }
