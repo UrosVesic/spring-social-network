@@ -1,7 +1,5 @@
 package rs.ac.bg.fon.springsocialnetwork.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.bg.fon.springsocialnetwork.model.User;
 
@@ -13,14 +11,9 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByUsername(String username);
-
-    List<User> findByuserIdNotIn(List<Long> following);
-
+    List<User> findByUserIdNotIn(List<Long> following);
     Optional<User> findByEmail(String email);
-
-    boolean existsByUsername(String uros99);
-
+    boolean existsByUsername(String username);
     void deleteByUsername(String username);
-
-    List<User> findByuserIdNotInAndIsEnabled(List<Long> collect,boolean enabled);
+    List<User> findByUserIdNotInAndIsEnabled(List<Long> collect, boolean enabled);
 }

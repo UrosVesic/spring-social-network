@@ -1,8 +1,6 @@
 package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,11 +114,11 @@ public class UserService {
     }
     @Transactional
     public List<UserDto> getAllSuggestedUsers() {
-        List<User> notFollowing = userRepository.findByuserIdNotInAndIsEnabled(authService.getCurrentUser().getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()),true);
+        List<User> notFollowing = userRepository.findByUserIdNotInAndIsEnabled(authService.getCurrentUser().getFollowing().stream().map((user)->user.getUserId()).collect(Collectors.toList()),true);
         if(notFollowing.size()==0){
             List<Long> myId=new ArrayList<>();
             myId.add(authService.getCurrentUser().getUserId());
-            notFollowing=userRepository.findByuserIdNotIn(myId);
+            notFollowing=userRepository.findByUserIdNotIn(myId);
         }
         notFollowing.remove(authService.getCurrentUser());
         Collections.sort(notFollowing,(user1,user2)
