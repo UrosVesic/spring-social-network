@@ -18,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
     List<Post> findByUser_userIdInAndDeletebByAdminIsNull(List<Long> following);
+
+    List<Post> findByTopic_name(String topicName);
 }

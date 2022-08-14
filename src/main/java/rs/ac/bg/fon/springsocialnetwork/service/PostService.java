@@ -2,6 +2,7 @@ package rs.ac.bg.fon.springsocialnetwork.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostRequest;
 import rs.ac.bg.fon.springsocialnetwork.dto.PostResponse;
@@ -57,7 +58,7 @@ public class PostService {
     }
     @Transactional
     public PostResponse getPost(Long id) {
-        Post post = postRepository.getById(id);
+        Post post = postRepository.findById(id).orElseThrow(()->new MyRuntimeException("Post not found"));
         return postResponseMapper.toDto(post);
     }
 
@@ -69,6 +70,9 @@ public class PostService {
     @Transactional
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new MyRuntimeException("Post not found"));
+        if(!post.getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
+            throw new MyRuntimeException("You are not owner of the post");
+        }
         post.returnChildRepositories(context).forEach(r->r.deleteByParent(post));
         postRepository.deleteById(id);
     }
@@ -94,7 +98,7 @@ public class PostService {
         Set<Post> reportedPosts;
         reportedPosts = postReports.stream().map(PostReport::getPost).collect(Collectors.toSet());
         Set<ReportedPostDto> collect = reportedPosts.stream().map(post -> reportedPostMapper.toDto(post)).collect(Collectors.toSet());
-        return collect.stream().sorted((report1,report2)->report1.getReportCount()>report2.getReportCount()?-1:1).collect(Collectors.toCollection(LinkedHashSet::new));
+        return collect.stream().sorted(Comparator.comparing(ReportedPostDto::getReportCount)).collect(Collectors.toCollection(LinkedHashSet::new));
     }
     @Transactional
     public Set<ReportedPostDto> getAllSolvedReportedPosts() {
@@ -116,5 +120,17 @@ public class PostService {
         postReports.forEach(report->report.setReportStatus(ReportStatus.DELETED));
         //postReports = postReports.stream().peek(report->report.setReportStatus(ReportStatus.DELETED)).collect(Collectors.toList());
         postReportRepository.saveAll(postReports);
+    }
+
+    public List<PostResponse> getAllPostsForTopic(String topicName) {
+        List<Post> posts = postRepository.findByTopic_name(topicName);
+        return posts.stream()
+                .map(p -> postResponseMapper.toDto(p))
+                .sorted((p1,p2)->likeDislikeDifference(p2)-likeDislikeDifference(p1))
+                .collect(Collectors.toList());
+    }
+
+    public int likeDislikeDifference(PostResponse p){
+        return p.getLikes()-p.getDislikes();
     }
 }

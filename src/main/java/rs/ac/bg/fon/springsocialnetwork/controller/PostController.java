@@ -37,6 +37,11 @@ public class PostController {
         return new ResponseEntity<>(allPosts, HttpStatus.OK);
     }
 
+    @GetMapping("/topic/{topicName}")
+    public ResponseEntity<List<PostResponse>> getAllPostsForTopic(@PathVariable String topicName){
+        List<PostResponse> topicPosts = postService.getAllPostsForTopic(topicName);
+        return new ResponseEntity<>(topicPosts,HttpStatus.OK);
+    }
     @GetMapping("/authAll")
     public ResponseEntity<List<PostResponse>> getAllPostsForFollowingUsers(){
         List<PostResponse> allPosts = postService.getAllPostsForFollowingUsers();
