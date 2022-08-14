@@ -23,7 +23,7 @@ public class Topic implements MyEntity{
     @NotBlank(message = "Topic name is required")
     @Column(unique = true)
     private String name;
-    @NotBlank(message = "Description is required")
+
     private String description;
     @OneToMany(fetch = FetchType.LAZY)
     private List<Post> posts;
