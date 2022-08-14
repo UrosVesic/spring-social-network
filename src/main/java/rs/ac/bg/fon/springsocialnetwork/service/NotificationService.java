@@ -61,7 +61,7 @@ public class NotificationService {
     public List<NotificationDto> getAllNotificationsForUser() {
         List<Notification> notifications = notificationRepository.findByTo_usernameOrderByIdDesc(authService.getCurrentUser().getUsername());
         return notifications.stream()
-                .sorted(Comparator.comparing(Notification::getCreated_at))
+                .sorted(Comparator.comparing(Notification::getCreated_at).reversed())
                 .map(n -> notificationMapper.toDto(n))
                 .collect(Collectors.toList());
     }
