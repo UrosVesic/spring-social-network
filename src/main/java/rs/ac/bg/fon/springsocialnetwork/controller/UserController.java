@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping(value = "/follow/{username}")
     public ResponseEntity follow(@PathVariable String username){
-        userService.follow(authService.getCurrentUser(), username);
+        userService.follow(username);
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
 

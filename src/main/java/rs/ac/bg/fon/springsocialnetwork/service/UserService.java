@@ -36,7 +36,8 @@ public class UserService {
 
 
     @Transactional
-    public void follow(User currentUser, String username){
+    public void follow(String username){
+        User currentUser = authService.getCurrentUser();
         Optional<User> userOptFollowed = userRepository.findByUsername(username);
 
         User userFollowed = userOptFollowed.orElseThrow(() -> new MyRuntimeException("User not found"));
