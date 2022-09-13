@@ -1,7 +1,6 @@
 package rs.ac.bg.fon.springsocialnetwork.config;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,20 +8,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import rs.ac.bg.fon.springsocialnetwork.jwt.JwtFilter;
-import rs.ac.bg.fon.springsocialnetwork.jwt.JwtProvider;
-import rs.ac.bg.fon.springsocialnetwork.service.UserDetailsServiceImpl;
 
 import java.util.Arrays;
 
@@ -32,17 +26,16 @@ import java.util.Arrays;
 @EnableWebSecurity
 @AllArgsConstructor
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig{
 
     private UserDetailsService userDetailsService;
 
 
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests()
                         .antMatchers("/api/auth/**")
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/topic/**")
@@ -72,8 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers("/api/message/**")
                         .hasAuthority("USER")
                         .anyRequest()
-                        .authenticated());
+                        .authenticated()
+                        .and().sessionManagement()
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
     @Bean
     public JwtFilter jwtFilter() {
@@ -82,28 +78,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web
+                .ignoring()
+                .antMatchers(HttpMethod.OPTIONS, "/**");
     }
 
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    public AuthenticationManager authManager(HttpSecurity http)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
     }
-
 
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
     }
 
 }
