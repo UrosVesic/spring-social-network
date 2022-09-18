@@ -26,7 +26,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author UrosVesic
@@ -50,13 +49,13 @@ public class SecurityConfig{
                         .antMatchers(HttpMethod.GET, "/api/topic/**")
                         .permitAll()
                         .antMatchers("/api/post/authAll")
-                        .hasAuthority("USER")
+                        .hasAuthority("SCOPE_USER")
                         .antMatchers(HttpMethod.GET, "/api/post/{id}")
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/post/all")
                         .permitAll()
                         .antMatchers("/api/post/secured/**")
-                        .hasAuthority("ADMIN")
+                        .hasAuthority("SCOPE_ADMIN")
                         .antMatchers("/sba-websocket/**")
                         .permitAll()
                         .antMatchers(HttpMethod.GET, "/api/comment/**")
@@ -64,15 +63,15 @@ public class SecurityConfig{
                         .antMatchers(HttpMethod.GET, "/api/user/**")
                         .permitAll()
                         .antMatchers("/api/admin/**")
-                        .hasRole("ADMIN")
+                        .hasAuthority("SCOPE_ADMIN")
                         .antMatchers("/api/role/**")
                         .permitAll()
                         .antMatchers("/api/user/{username}/assign/{rolename}")
                         .permitAll()
                         .antMatchers(HttpMethod.DELETE,"/api/user/**")
-                        .hasAuthority("ADMIN")
+                        .hasAuthority("SCOPE_ADMIN")
                         .antMatchers("/api/message/**")
-                        .hasAuthority("USER")
+                        .hasAuthority("SCOPE_USER")
                         .anyRequest()
                         .authenticated()
                         .and().sessionManagement()
@@ -85,6 +84,7 @@ public class SecurityConfig{
     public JwtDecoder jwtDecoder(){
         return NimbusJwtDecoder.withPublicKey(rsaKeyProperties.getPublicKey()).build();
     }
+
 
     @Bean
     public JwtEncoder jwtEncoder(){
