@@ -49,31 +49,16 @@ public class AuthController {
         return authService.login(loginRequest);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public  ResponseEntity<List<String>> handleConstraintViolationException(ConstraintViolationException ex){
-        Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
-        List<String> violations=new ArrayList<>();
-        violations.addAll(constraintViolations.stream().map(viol->viol.getMessage()).collect(Collectors.toList()));
-        return new ResponseEntity<>(violations,HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public  ResponseEntity<String> handleSQLIntegrityConstraintViolation(SQLIntegrityConstraintViolationException ex){
-        return new ResponseEntity<>("Username or email already exists",HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(DataIntegrityViolationException.class)
     public  ResponseEntity<String> handleDataIntegrityViolationException(){
         return new ResponseEntity<>("Account with given username or email already exists",HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public  ResponseEntity<List<String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
         List<ObjectError> allErrors = ex.getAllErrors();
         List<String> collect = allErrors.stream().map(err -> err.getDefaultMessage()).collect(Collectors.toList());
         return new ResponseEntity<>(collect,HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> authExceptionHandler(AuthenticationException ex){
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.FORBIDDEN);
