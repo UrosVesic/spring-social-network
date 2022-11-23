@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("/**")
+                .allowedOriginPatterns(appConfig.getFrontUrl())
                 .allowedMethods("*")
                 .maxAge(3600L)
                 .allowedHeaders("*")
